@@ -16,6 +16,7 @@ import java.util.Locale;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.regex.Pattern;
+import java.math.BigDecimal;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -818,5 +819,10 @@ public final class FileUtils {
         }
         return null;
     }
-    
+
+    public static double round(double d, int decimalPlace) {
+        BigDecimal bd = new BigDecimal(Double.toString(d));
+        bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_UP);
+        return bd.doubleValue();
+    }
 }
