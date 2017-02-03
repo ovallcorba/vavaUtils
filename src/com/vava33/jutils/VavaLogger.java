@@ -10,6 +10,8 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
+import javax.swing.SwingUtilities;
+
 /**
  * @author ovallcorba
  *
@@ -40,14 +42,28 @@ public class VavaLogger {
     /** THE LOGGER */
 	public Logger LOG;
 	
+	/** THE HANDLERS **/
+	private ConsoleHandler consoleH;
+//	private FileHandler fileH;
+	private TextAreaHandler txtAreaH;
+	
 	//crea un logger amb el nom donat amb un handler per la consola, si usermode=true nomes mostra [level] msg
-	public VavaLogger(String name){
+	public VavaLogger(String name){//, boolean debugmode){
 	    LOG = Logger.getLogger(name);
         LOG.setUseParentHandlers(false);
         if (LOG.getHandlers().length==0){
-            Handler ch = new ConsoleHandler();
-            LOG.addHandler(ch);            
+            consoleH = new ConsoleHandler();
+            LOG.addHandler(consoleH);            
         }
+	}
+	
+//    public void addFileHandler(file f){
+//	    fileH = new FileHandler();
+//	}
+	
+	public void addTextAreaHandler(LogJTextArea ta){
+	    txtAreaH = new TextAreaHandler(ta);
+	    LOG.addHandler(txtAreaH);
 	}
 	
 	//default logger
@@ -124,16 +140,34 @@ public class VavaLogger {
 	public String logStatus(){
         String out = "";
         for (Handler handler : LOG.getHandlers()) {
-            if (handler.getLevel()==Level.OFF)out = "Console logging DISABLED";
-            if (handler.getLevel()==Level.INFO)out = "Console logging ENABLED - INFO";
-            if (handler.getLevel()==Level.WARNING)out = "Console logging ENABLED - WARNING";
-            if (handler.getLevel()==Level.CONFIG)out = "Console logging ENABLED - CONFIG";
-            if (handler.getLevel()==Level.SEVERE)out = "Console logging ENABLED - SEVERE";
-            if (handler.getLevel()==Level.FINE)out = "Console logging ENABLED - FINE";
+//            System.out.println(handler);
+            if (handler instanceof ConsoleHandler){
+                if (handler.getLevel()==Level.OFF)out = "Console logging DISABLED";
+                if (handler.getLevel()==Level.INFO)out = "Console logging ENABLED - INFO";
+                if (handler.getLevel()==Level.WARNING)out = "Console logging ENABLED - WARNING";
+                if (handler.getLevel()==Level.CONFIG)out = "Console logging ENABLED - CONFIG";
+                if (handler.getLevel()==Level.SEVERE)out = "Console logging ENABLED - SEVERE";
+                if (handler.getLevel()==Level.FINE)out = "Console logging ENABLED - FINE";
+                continue;
+            }
+            if (handler instanceof TextAreaHandler){
+                if (handler.getLevel()==Level.OFF)out = "TextArea logging DISABLED";
+                if (handler.getLevel()==Level.INFO)out = "TextArea logging ENABLED - INFO";
+                if (handler.getLevel()==Level.WARNING)out = "TextArea logging ENABLED - WARNING";
+                if (handler.getLevel()==Level.CONFIG)out = "TextArea logging ENABLED - CONFIG";
+                if (handler.getLevel()==Level.SEVERE)out = "TextArea logging ENABLED - SEVERE";
+                if (handler.getLevel()==Level.FINE)out = "TextArea logging ENABLED - FINE";
+                continue;
+            }
+            if (handler.getLevel()==Level.OFF)out = "logging DISABLED";
+            if (handler.getLevel()==Level.INFO)out = "logging ENABLED - INFO";
+            if (handler.getLevel()==Level.WARNING)out = "logging ENABLED - WARNING";
+            if (handler.getLevel()==Level.CONFIG)out = "logging ENABLED - CONFIG";
+            if (handler.getLevel()==Level.SEVERE)out = "logging ENABLED - SEVERE";
+            if (handler.getLevel()==Level.FINE)out = "logging ENABLED - FINE";
         }
         return out;
-
-	}
+ 	}
 	
 // ************* WRITTING MESSAGES
 	
@@ -155,7 +189,7 @@ public class VavaLogger {
 	public void fine(String s){
 	    LOG.fine(s);
 	}
-
+	
 	
 	public void printmsg(String LEVEL, String msg){
 	    if (LEVEL.equalsIgnoreCase("config"))LOG.config(msg);
@@ -206,6 +240,22 @@ public class VavaLogger {
         printmsg(level,msg.toString().trim());
     }
     
+    public void writeNameNums(String level, boolean oneline, String names, int... numbers){
+//      LOG.info(names);
+      StringBuilder msg = new StringBuilder();
+      if (!oneline){
+          printmsg(level,names.trim());
+      }else{
+          msg.append(names);
+          msg.append(" = ");
+      }
+      for (int i=0; i<numbers.length; i++){
+          msg.append(numbers[i]);
+          msg.append(" ");
+      }
+      printmsg(level,msg.toString().trim());
+  }
+    
 	//prints a list of floats (no names)
 	public void writeFloats(String level, double... numbers){
 	    StringBuilder msg = new StringBuilder();
@@ -246,6 +296,52 @@ public class VavaLogger {
                     +record.getMessage()+"\n";
         }
      
-    }	
+    }
+    
+    
+//HANDLER CLASSES
+    public class TextAreaHandler extends java.util.logging.Handler {
+
+        private LogJTextArea tA; 
+
+        public TextAreaHandler(LogJTextArea txtAOut){
+            super();
+            this.tA=txtAOut;
+        }
+        
+        @Override
+        public void publish(final LogRecord record) {
+            SwingUtilities.invokeLater(new Runnable() {
+
+                @Override
+                public void run() {
+                    tA.stat(record.getMessage());
+                }
+
+            });
+        }
+
+        public LogJTextArea getTextArea() {
+            return this.tA;
+        }
+
+        /* (non-Javadoc)
+         * @see java.util.logging.Handler#close()
+         */
+        @Override
+        public void close() throws SecurityException {
+            // TODO Auto-generated method stub
+            
+        }
+
+        /* (non-Javadoc)
+         * @see java.util.logging.Handler#flush()
+         */
+        @Override
+        public void flush() {
+            // TODO Auto-generated method stub
+            
+        }
+    }
 	
 }
