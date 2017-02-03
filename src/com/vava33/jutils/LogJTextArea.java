@@ -1,5 +1,9 @@
 /**
  * LogJTextArea
+ * 
+ * Version 131029
+ * 
+ * Copyright (C) Oriol Vallcorba 2013
  *  
  */
 package com.vava33.jutils;
@@ -18,6 +22,7 @@ import java.io.FileWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+//import javax.swing.BorderFactory;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextArea;
@@ -26,6 +31,7 @@ import javax.swing.JTextArea;
  * Custom JTextArea for logging purposes.
  *
  * @author ovallcorba
+ * @version %I%, %G%
  */
 public class LogJTextArea extends JTextArea implements ActionListener {
 
@@ -84,6 +90,7 @@ public class LogJTextArea extends JTextArea implements ActionListener {
         this.setForeground(LogJTextArea.fore);
         this.setBackground(LogJTextArea.back);
         this.setBorder(null);
+//        this.setBorder(BorderFactory.createEmptyBorder());
         LogJTextArea.fsize = this.getFont().getSize();
         this.createPopupMenu();
         LogJTextArea.autoscroll = true;
@@ -394,6 +401,15 @@ public class LogJTextArea extends JTextArea implements ActionListener {
      */
     public float getMidaLletra() {
         return this.getFont().getSize();
+    }
+    
+    /**
+     * Sets the mida lletra.
+     *
+     * @return the mida lletra
+     */
+    public void setMidaLletra(float size) {
+        this.setFont(this.getFont().deriveFont(size));
     }
 
     // ------
