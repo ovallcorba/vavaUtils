@@ -1,6 +1,6 @@
 /**
  * FileUtils
- *  
+ * 
  */
 package com.vava33.jutils;
 
@@ -33,6 +33,9 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 public final class FileUtils {
 
     /** The decimal format #0.0 */
+    public static DecimalFormat dfX_0 = new DecimalFormat("#0");
+    
+    /** The decimal format #0.0 */
     public static DecimalFormat dfX_1 = new DecimalFormat("#0.0");
     
     /** The decimal format #0.00 */
@@ -51,7 +54,7 @@ public final class FileUtils {
     public static DecimalFormat dfX_6 = new DecimalFormat("#0.000000");
     
     /** The currentlocale. */
-    private static Locale currentlocale = Locale.getDefault();
+    public static Locale currentlocale = Locale.ROOT;
     
     /** The lowercases. */
     private static char[] lowercases = { '\000', '\001', '\002', '\003',
@@ -140,6 +143,17 @@ public final class FileUtils {
         return Float.intBitsToFloat(asInt);
     }
 
+    /**
+     * Byte[4] to int (LITTLE ENDIAN).
+     *
+     * @param b the byte array
+     * @return the int
+     */
+    public static int B4toInt(byte[] b) {
+        return (b[0] & 0xFF) | ((b[1] & 0xFF) << 8)
+                | ((b[2] & 0xFF) << 16) | ((b[3] & 0xFF) << 24);
+    }
+        
     /**
      * Canvi extensio. Si no en té l'afegeix.
      *
@@ -294,14 +308,16 @@ public final class FileUtils {
      *  dels dos es tractara com a WINDOWS per defecte
      */
     public static void detectOS() {
+        //mirem versio java
+        String javav = System.getProperty("java.version");
         // mirem sistema operatiu:
         String ops = System.getProperty("os.name").toLowerCase();
         if (ops.indexOf("win") >= 0) {
-            System.out.println("Running on Windows");
+            System.out.println(String.format("Running on Windows [java %s]",javav));
             FileUtils.setOS("win");
         } else if ((ops.indexOf("nix") >= 0) || (ops.indexOf("nux") >= 0)
                 || (ops.indexOf("aix") > 0)) {
-            System.out.println("Running on Unix or Linux");
+            System.out.println(String.format("Running on Unix or Linux [java %s]",javav));
             FileUtils.setOS("lin");
         } else {
             System.out.println("Your OS is not supported!!");
@@ -321,7 +337,7 @@ public final class FileUtils {
             return false;
         }
     }
-    
+
     /**
      * Fchooser. Obra un File Chooser al directori especificat amb els filtres
      * especificats i retorna el fitxer seleccionat o null. TOTES LES OPCIONS
@@ -464,9 +480,17 @@ public final class FileUtils {
     
     public static boolean YesNoDialog(Component parent, String question){
         int actionDialog = JOptionPane.showConfirmDialog(parent,
-                question);
+                question,"Select an option",JOptionPane.YES_NO_OPTION);
         if (actionDialog == JOptionPane.YES_OPTION)return true;
         return false;
+    }
+    
+    public static int YesNoCancelDialog(Component parent, String question){
+        int actionDialog = JOptionPane.showConfirmDialog(parent,
+                question);
+        if (actionDialog == JOptionPane.YES_OPTION)return 1;
+        if (actionDialog == JOptionPane.NO_OPTION)return 0;
+        return -1;
     }
     
     
@@ -625,6 +649,18 @@ public final class FileUtils {
      * Sets the locale.
      */
     public static void setLocale() {
+        // To TEST:
+        // System.out.println(mySymbols.getDecimalSeparator());
+        // mySymbols.setDecimalSeparator('.');
+        // System.out.println(mySymbols.getDecimalSeparator());
+        // System.out.println(mySymbols.getGroupingSeparator());
+        // System.out.println(dfX_3.format(12345678.009921));
+        // dfX_3.setDecimalFormatSymbols(mySymbols);
+        // System.out.println(dfX_3.format(12345678.009921));
+//        System.out.println(currentlocale.getCountry());
+//        System.out.println(currentlocale.getLanguage());
+        Locale.setDefault(currentlocale);
+
         FileUtils.mySymbols.setDecimalSeparator('.');
         FileUtils.dfX_1.setDecimalFormatSymbols(FileUtils.mySymbols);
         FileUtils.dfX_2.setDecimalFormatSymbols(FileUtils.mySymbols);
@@ -699,7 +735,7 @@ public final class FileUtils {
      * converteix un string amb numeros xxx.xxxxx separats per un o mes espais
      * en un array que conté aquests numeros (també agafarà enters de fins a
      * 8 xifres)
-     * 
+     *
      * @param linia the linia
      * @return the string[]
      */
