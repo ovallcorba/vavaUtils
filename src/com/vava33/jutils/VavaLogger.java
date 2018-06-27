@@ -1,9 +1,12 @@
 package com.vava33.jutils;
 
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 import java.util.logging.ConsoleHandler;
+import java.util.logging.FileHandler;
 import java.util.logging.Formatter;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -18,57 +21,117 @@ import javax.swing.SwingUtilities;
  */
 public class VavaLogger {
 
-    /** The decimal formats #0.0 */
-    public static DecimalFormat dfX_1 = new DecimalFormat("#0.0");
-    
-    /** The decimal format #0.00 */
-    public static DecimalFormat dfX_2 = new DecimalFormat("#0.00");
-    
-    /** The decimal format #0.000 */
-    public static DecimalFormat dfX_3 = new DecimalFormat("#0.000");
-    
-    /** The decimal format #0.0000 */
-    public static DecimalFormat dfX_4 = new DecimalFormat("#0.0000");
-    
-    /** The decimal format #0.00000 */
-    public static DecimalFormat dfX_5 = new DecimalFormat("#0.00000");
-    
-    /** The decimal format #0.00000 */
-    public static DecimalFormat dfX_6 = new DecimalFormat("#0.000000");
-    
-    /** The time stamp format [HH:mm] */
-    private static SimpleDateFormat fHora = new SimpleDateFormat("[HH:mm]");
-    
     /** THE LOGGER */
 	public Logger LOG;
+	private String levelString;
+	private boolean logConsole, logFile, logTA;
 	
 	/** THE HANDLERS **/
-	private ConsoleHandler consoleH;
-//	private FileHandler fileH;
-	private TextAreaHandler txtAreaH;
+	private static ConsoleHandler consoleH;
+	private static FileHandler fileH;
+	private static TextAreaHandler txtAreaH;
 	
+	public static String loggingFilePath = System.getProperty("user.dir") + System.getProperty("file.separator") + "log.txt";
+	private static LogJTextArea logTextArea;
+
+	private static List<VavaLogger> loggers = new ArrayList<VavaLogger>();
+    
+	public VavaLogger(String name, boolean logConsole, boolean logFile, boolean loggingTA){
+		
+	    LOG = Logger.getLogger(name);
+	    
+	    if (LOG.getHandlers().length>0)return; //vol dir que ja existeix el log
+	    
+	    this.logConsole=logConsole;
+	    this.logFile=logFile;
+	    this.logTA=loggingTA;
+	    
+	    loggers.add(this);
+	    
+	    //afegim handlers i propietats si s'escau
+        LOG.setUseParentHandlers(false);
+        if (logConsole)addConsoleHandler();
+        if (logFile) addFileHandler();
+        if (loggingTA) addTextAreaHandler();
+	}
+    
+    
 	//crea un logger amb el nom donat amb un handler per la consola, si usermode=true nomes mostra [level] msg
 	public VavaLogger(String name){//, boolean debugmode){
-	    LOG = Logger.getLogger(name);
-        LOG.setUseParentHandlers(false);
-        if (LOG.getHandlers().length==0){
-            consoleH = new ConsoleHandler();
-            LOG.addHandler(consoleH);            
-        }
-	}
-	
-//    public void addFileHandler(file f){
-//	    fileH = new FileHandler();
-//	}
-	
-	public void addTextAreaHandler(LogJTextArea ta){
-	    txtAreaH = new TextAreaHandler(ta);
-	    LOG.addHandler(txtAreaH);
+		  this(name,true,false,false);
 	}
 	
 	//default logger
 	public VavaLogger(){
 	    this("VAVALOGGER");
+	}
+	
+	private void addConsoleHandler(){
+		if (consoleH==null) {
+			consoleH= new ConsoleHandler();
+		}
+		LOG.addHandler(consoleH);
+		       	
+	}
+	
+	private void addFileHandler(){
+		if (fileH==null) {
+			try {
+				 fileH = new FileHandler(new File(loggingFilePath).getAbsolutePath(),true);
+				} catch (Exception e) {
+					System.out.println("Error initializing File Logging");
+					return;
+				}
+		}
+		LOG.addHandler(fileH);
+	}
+	
+	private void addTextAreaHandler(){
+		if (logTextArea!=null) {
+			if (txtAreaH==null) {
+			    txtAreaH = new TextAreaHandler(logTextArea);
+			}
+		    LOG.addHandler(txtAreaH);			
+		}
+	}
+	
+	public static void setTArea(LogJTextArea ta) {
+		logTextArea = ta;
+		txtAreaH = new TextAreaHandler(logTextArea);
+		updateLOGS();
+	}
+	
+	private static void updateLOGS() {
+		Iterator<VavaLogger> itrL = loggers.iterator();
+		while (itrL.hasNext()) {
+			VavaLogger l = itrL.next();
+			if(!l.logTA)continue;
+			boolean hasTextArea = false;
+	        for (Handler handler : l.LOG.getHandlers()) {
+	            if (handler instanceof TextAreaHandler){
+	          	    hasTextArea = true;
+	          	    handler = txtAreaH;
+	          	    break;
+	            }
+	          }
+	        if (!hasTextArea)l.LOG.addHandler(txtAreaH);
+	        l.setLogLevel(l.getLogLevelString());
+		}
+	}
+	
+	/**
+	 * @return the loggingFilePath
+	 */
+	public static String getLoggingFilePath() {
+		return loggingFilePath;
+	}
+
+
+	/**
+	 * @param loggingFilePath the loggingFilePath to set
+	 */
+	public static void setLoggingFilePath(String loggingFilePath) {
+		VavaLogger.loggingFilePath = loggingFilePath;
 	}
 	
 // ********** LEVEL CONTROL
@@ -85,6 +148,15 @@ public class VavaLogger {
 		LOG.setLevel(Level.ALL);
 	}
 	
+	public String getLogLevelString() {
+	    return levelString;
+	}
+
+	public boolean isEnabled() {
+	    if (LOG.getLevel()==Level.ALL) return true;
+	    return false;
+	}
+    
 	public void setLogLevel(String level){
         if (level.equalsIgnoreCase("config"))setCONFIG();
         if (level.equalsIgnoreCase("debug"))setCONFIG();
@@ -92,6 +164,7 @@ public class VavaLogger {
         if (level.equalsIgnoreCase("warning"))setWARNING();
         if (level.equalsIgnoreCase("severe"))setSEVERE();
         if (level.equalsIgnoreCase("fine"))setFINE();
+        levelString = level;
 	}
 	
     public void setINFO(){
@@ -109,10 +182,10 @@ public class VavaLogger {
     }
     
     public void setCONFIG(){
-        for (Handler handler : LOG.getHandlers()) {
-            handler.setLevel(Level.CONFIG);
-            handler.setFormatter(new FormatterDEBUG());
-        }
+    	for (Handler handler : LOG.getHandlers()) {
+    		handler.setLevel(Level.CONFIG);
+  			handler.setFormatter(new FormatterDEBUG());	
+    	}
     }
     
     public void setSEVERE(){
@@ -125,7 +198,8 @@ public class VavaLogger {
     public void setFINE(){
         for (Handler handler : LOG.getHandlers()) {
             handler.setLevel(Level.FINE);
-            handler.setFormatter(new FormatterDEBUG());
+            handler.setFormatter(new FormatterDEBUG());	
+            
         }
     }
 	
@@ -137,59 +211,53 @@ public class VavaLogger {
         }
 	}
 	
-	public String logStatus(){
-        String out = "";
-        for (Handler handler : LOG.getHandlers()) {
-//            System.out.println(handler);
-            if (handler instanceof ConsoleHandler){
-                if (handler.getLevel()==Level.OFF)out = "Console logging DISABLED";
-                if (handler.getLevel()==Level.INFO)out = "Console logging ENABLED - INFO";
-                if (handler.getLevel()==Level.WARNING)out = "Console logging ENABLED - WARNING";
-                if (handler.getLevel()==Level.CONFIG)out = "Console logging ENABLED - CONFIG";
-                if (handler.getLevel()==Level.SEVERE)out = "Console logging ENABLED - SEVERE";
-                if (handler.getLevel()==Level.FINE)out = "Console logging ENABLED - FINE";
-                continue;
-            }
-            if (handler instanceof TextAreaHandler){
-                if (handler.getLevel()==Level.OFF)out = "TextArea logging DISABLED";
-                if (handler.getLevel()==Level.INFO)out = "TextArea logging ENABLED - INFO";
-                if (handler.getLevel()==Level.WARNING)out = "TextArea logging ENABLED - WARNING";
-                if (handler.getLevel()==Level.CONFIG)out = "TextArea logging ENABLED - CONFIG";
-                if (handler.getLevel()==Level.SEVERE)out = "TextArea logging ENABLED - SEVERE";
-                if (handler.getLevel()==Level.FINE)out = "TextArea logging ENABLED - FINE";
-                continue;
-            }
-            if (handler.getLevel()==Level.OFF)out = "logging DISABLED";
-            if (handler.getLevel()==Level.INFO)out = "logging ENABLED - INFO";
-            if (handler.getLevel()==Level.WARNING)out = "logging ENABLED - WARNING";
-            if (handler.getLevel()==Level.CONFIG)out = "logging ENABLED - CONFIG";
-            if (handler.getLevel()==Level.SEVERE)out = "logging ENABLED - SEVERE";
-            if (handler.getLevel()==Level.FINE)out = "logging ENABLED - FINE";
-        }
-        return out;
+	public String logStatus(){ 
+		StringBuilder sb = new StringBuilder();		
+		if (this.logConsole) sb.append("Console logging ENABLED - level:"+levelString.toUpperCase()+"\n");
+		if (this.logFile) sb.append("File logging ENABLED ("+loggingFilePath+") - level:"+levelString.toUpperCase()+"\n");
+		if (this.logTA) sb.append("TextArea logging ENABLED - level:"+levelString.toUpperCase()+"\n");
+		return sb.toString().trim();
  	}
 	
 // ************* WRITTING MESSAGES
 	
+	public void infoID(String s, String id_who_send_message){
+		LOG.info("["+id_who_send_message+"] "+s);
+	}
 	public void info(String s){
 		LOG.info(s);
 	}
+	public void infof(String format, Object... args) {
+        LOG.info(String.format(format, args));
+    }
 	public void warning(String s){
 		LOG.warning(s);
+	}
+	public void warningf(String format, Object... args){
+        LOG.warning(String.format(format, args));
 	}
 	public void config(String s){
 		LOG.config(s);
 	}
+	public void configf(String format, Object... args) {
+	    LOG.config(String.format(format, args));
+	}
 	public void debug(String s){
 	    LOG.config(s);
 	}
+	public void debugf(String format, Object... args) {
+	    LOG.config(String.format(format, args));
+	}
+	   
     public void severe(String s){
         LOG.severe(s);
     }
 	public void fine(String s){
 	    LOG.fine(s);
 	}
-	
+	public void finef(String format, Object... args) {
+        LOG.fine(String.format(format, args));
+    }
 	
 	public void printmsg(String LEVEL, String msg){
 	    if (LEVEL.equalsIgnoreCase("config"))LOG.config(msg);
@@ -199,8 +267,6 @@ public class VavaLogger {
 	    if (LEVEL.equalsIgnoreCase("severe"))LOG.severe(msg);
 	    if (LEVEL.equalsIgnoreCase("fine"))LOG.fine(msg);
 	}
-	    
-	
 	//it will write a line containing name=value, name2=value2, ...
 	// oneline means if it will be written in one line or one variable per line
 	public void writeNameNumPairs(String level, boolean oneline, String namesCommaSeparated, double... numbers){
@@ -213,7 +279,7 @@ public class VavaLogger {
 	    //farem les parelles
 	    StringBuilder msg = new StringBuilder();
         for (int i=0; i<numbers.length; i++){
-            msg.append(nameslist[i]+"="+dfX_5.format(numbers[i]));
+            msg.append(nameslist[i]+"="+FileUtils.dfX_5.format(numbers[i]));
             if (oneline){
                 msg.append(" ");
             }else{
@@ -234,14 +300,13 @@ public class VavaLogger {
             msg.append(" = ");
         }
         for (int i=0; i<numbers.length; i++){
-            msg.append(dfX_5.format(numbers[i]));
+            msg.append(FileUtils.dfX_5.format(numbers[i]));
             msg.append(" ");
         }
         printmsg(level,msg.toString().trim());
     }
     
     public void writeNameNums(String level, boolean oneline, String names, int... numbers){
-//      LOG.info(names);
       StringBuilder msg = new StringBuilder();
       if (!oneline){
           printmsg(level,names.trim());
@@ -260,12 +325,14 @@ public class VavaLogger {
 	public void writeFloats(String level, double... numbers){
 	    StringBuilder msg = new StringBuilder();
 	    for (int i=0; i<numbers.length; i++){
-	        msg.append(dfX_5.format(numbers[i]));
+	        msg.append(FileUtils.dfX_5.format(numbers[i]));
 	        msg.append(" ");
 	    }
 	    printmsg(level,msg.toString().trim());
 	}
 
+	
+	
 	
 //******************* FORMATTER CLASSES 
 	
@@ -273,7 +340,7 @@ public class VavaLogger {
 		 
 	    @Override
 	    public String format(LogRecord record) {
-	    	String dt = fHora.format(new Date(record.getMillis()));
+	    	String dt = FileUtils.fHora.format(new Date(record.getMillis()));
 	        return dt+" "
   	        		+record.getThreadID()+" "
 //	        		+record.getClass()+":"
@@ -290,7 +357,7 @@ public class VavaLogger {
         
         @Override
         public String format(LogRecord record) {
-            String dt = fHora.format(new Date(record.getMillis()));
+            String dt = FileUtils.fHora.format(new Date(record.getMillis()));
             return dt+" ["
                     +record.getLevel()+"] "
                     +record.getMessage()+"\n";
@@ -300,9 +367,9 @@ public class VavaLogger {
     
     
 //HANDLER CLASSES
-    public class TextAreaHandler extends java.util.logging.Handler {
+    public static class TextAreaHandler extends java.util.logging.Handler {
 
-        private LogJTextArea tA; 
+        private LogJTextArea tA;
 
         public TextAreaHandler(LogJTextArea txtAOut){
             super();
@@ -315,7 +382,17 @@ public class VavaLogger {
 
                 @Override
                 public void run() {
-                    tA.stat(record.getMessage());
+                	//no log of CONFIG or FINE
+                	Level l = record.getLevel();
+                	if (l==Level.CONFIG)return;
+                	if (l==Level.FINE)return;
+                	if(l==Level.INFO) {
+                		tA.stat(record.getMessage());
+                	}
+                	if((l==Level.WARNING)||(l==Level.SEVERE)) {
+                		tA.stat("["+record.getLevel()+"] "+record.getMessage());
+                	}
+                	
                 }
 
             });
