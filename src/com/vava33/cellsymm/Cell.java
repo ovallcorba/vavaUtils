@@ -9,362 +9,81 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.Locale;
 
+import org.apache.commons.math3.linear.Array2DRowRealMatrix;
+import org.apache.commons.math3.linear.BlockRealMatrix;
+import org.apache.commons.math3.linear.MatrixUtils;
+import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.util.FastMath;
 
+import com.vava33.cellsymm.CellSymm_global.CrystalCentering;
+import com.vava33.cellsymm.CellSymm_global.CrystalFamily;
 import com.vava33.jutils.AtomProperties;
 import com.vava33.jutils.Cif_file;
 import com.vava33.jutils.VavaLogger;
+import com.vava33.jutils.CrystOps.CrystalSystem;
 
 public class Cell {
 
-    private static VavaLogger log = Cell.getVavaLogger(Cell.class.getName());
+    private static final String className = "Cell";
+    private static VavaLogger log = CellSymm_global.getVavaLogger(className);    
     
-    public static VavaLogger getVavaLogger(String name){
-        VavaLogger l = new VavaLogger(name);
-        l.setLogLevel("FINE");
-        l.enableLogger(true);
-        return l;
-    }
-    
-    private int ihmax,ikmax,ilmax,ihmin,ikmin,ilmin;
-    private int ilaue,ind;
-    private float a,b,c,al,be,ga; //radians
-    private float cr11,cr22,cr33,cr12,cr13,cr23;
+    private double a,b,c,al,be,ga; //radians
+    private double aStar,bStar,cStar,alStar,beStar,gaStar;//constants reciproques
     private SpaceGroup sg;
     private ArrayList<Atom> atoms;
-    private ArrayList<HKLrefl> refl_obs;
-    private ArrayList<HKLrefl> refl_obs_merged;
-    private ArrayList<HKLrefl> refl_ext;
+    private ArrayList<HKLrefl> refl_allowed_asy; //reflexions permeses de la unitat asimetrica
+    private ArrayList<HKLrefl> refl_extinct_asy; //reflexions extingides de la unitat asimetrica
+    RealMatrix G,Gstar;//metricMatrix
+    private CrystalFamily cf;
+    private CrystalCentering cc;
     
     
-    public Cell(float a, float b, float c, float alfa, float beta, float gamma, int sgNum) {
+    public Cell(double a, double b, double c, double alfa, double beta, double gamma, boolean inDegrees, CrystalFamily cf, CrystalCentering cc) {
         this.a=a;
         this.b=b;
         this.c=c;
-        this.al=(float) FastMath.toRadians(alfa);
-        this.be=(float) FastMath.toRadians(beta);
-        this.ga=(float) FastMath.toRadians(gamma);
-        sg = new SpaceGroup(sgNum);
-        this.recip();
+        if(inDegrees) {
+            this.al= FastMath.toRadians(alfa);
+            this.be= FastMath.toRadians(beta);
+            this.ga= FastMath.toRadians(gamma);
+        }else {
+            this.al= alfa;
+            this.be= beta;
+            this.ga= gamma;
+            
+        }
+        this.cf = cf;
+        this.cc = cc;
+        setMaxSymmSG();
+        initCalcs();
     }
     
-    public Cell(String cifFile) {
-        this.getAllfromCIF(cifFile);
+    public Cell(double a, double b, double c, double alfa, double beta, double gamma, boolean inDegrees, SpaceGroup sg) {
+        this(a,b,c,alfa,beta,gamma,inDegrees,sg.getCrystalFamily(),sg.getCrystalCentering());
+        this.sg=sg;
+    }
+    
+    public Cell(double a, double b, double c, double alfa, double beta, double gamma, boolean inDegrees, CrystalFamily cf) {
+        this(a,b,c,alfa,beta,gamma,inDegrees,cf,CrystalCentering.P);
+    }
+    
+    public Cell(double a, double b, double c, double alfa, double beta, double gamma, boolean inDegrees) {
+        this(a,b,c,alfa,beta,gamma,inDegrees,CrystalFamily.NONE);
+    }
+    
+    public Cell(String cifFile,boolean confirmReadedCifDataDialog) {
+        this.getAllfromCIF(cifFile,confirmReadedCifDataDialog);
         log.writeFloats("config", a,b,c,al,be,ga);
-        this.recip();
-        
+        initCalcs();
     }
     
-    private void recip() {
-        
-        double d2 = 1-FastMath.cos(al)*FastMath.cos(al)-FastMath.cos(be)*FastMath.cos(be)-FastMath.cos(ga)*FastMath.cos(ga)+2*FastMath.cos(al)*FastMath.cos(be)*FastMath.cos(ga);
-        cr11 = (float) ((FastMath.sin(al)*FastMath.sin(al))/(d2*a*a));
-        cr22 = (float) ((FastMath.sin(be)*FastMath.sin(be))/(d2*b*b));
-        cr33 = (float) ((FastMath.sin(ga)*FastMath.sin(ga))/(d2*c*c));
-        cr12 = (float) ((FastMath.cos(al)*FastMath.cos(be)-FastMath.cos(ga))/(d2*a*b));
-        cr13 = (float) ((FastMath.cos(al)*FastMath.cos(ga)-FastMath.cos(be))/(d2*a*c));
-        cr23 = (float) ((FastMath.cos(be)*FastMath.cos(ga)-FastMath.cos(al))/(d2*b*c));
-        log.writeFloats("config", cr11,cr22,cr33, cr12,cr13,cr23);
+    public Cell(Cif_file cf) {
+        this.getAllfromCIF(cf);
+        log.writeFloats("config", a,b,c,al,be,ga);
+        initCalcs();
     }
     
-    public void latgen(float waveA, float t2max){
-        double wumax = (FastMath.sin(FastMath.PI*t2max/360.)/waveA)*(FastMath.sin(FastMath.PI*t2max/360.)/waveA);
-        ihmax = (int) FastMath.round(2*a*FastMath.sqrt(wumax));
-        ikmax = (int) FastMath.round(2*a*FastMath.sqrt(wumax));
-        ilmax = (int) FastMath.round(2*a*FastMath.sqrt(wumax));
-        
-        log.writeFloats("config", ihmax,ikmax,ilmax, wumax);
-        
-        int nm = sg.getMat_SymAsyFloat12().size();
-        
-        if (nm>0) this.laue();
-        //TODO aqui hi ha l'opcio de si nm=0, fer el maxim del grup TGRUP ...
-        
-        refl_obs = new ArrayList<HKLrefl>();
-        refl_obs_merged = new ArrayList<HKLrefl>();
-        refl_ext = new ArrayList<HKLrefl>();
-        recip();
-        
-        for (int l=ilmin;l<=ilmax;l++) {
-            for (int k=ikmin;k<=ikmax;k++) {
-                for (int h=ihmin;h<=ihmax;h++) {
-                    log.fine(String.format("====  %4d %4d %4d ====", h,k,l));
-                    if ((h==0)&&(k==0)&&(l==0))continue;
-                    double wu = 0.25*(h*h*cr11+k*k*cr22+l*l*cr33+2*(h*k*cr12+h*l*cr13+k*l*cr23));
-                    if (wu>wumax)continue;
-                    double t2 = 360*FastMath.asin(waveA*FastMath.sqrt(wu))/FastMath.PI;
-
-                    //eliminacio extincions reticle
-                    ind = 0;
-                    this.exlatt(h,k,l);
-                    if (ind == 0) {
-                        log.fine("EXTINGIDA PEL RETICLE");
-                        refl_ext.add(new HKLrefl(h,k,l,t2));
-                        continue;
-                    }
-                    ind = 0;
-                    //Eliminacio extincions translacionals
-                    this.extras(h,k,l);
-                    if (ind == 0) {
-                        log.fine("EXTINGIDA PER TRANS");
-                        refl_ext.add(new HKLrefl(h,k,l,t2));
-                        continue;
-                    }
-                    refl_obs.add(new HKLrefl(h,k,l,t2));
-                    ind = 0;
-                    this.asiuni(h,k,l);
-                    if (ind == 0)continue;
-                    refl_obs_merged.add(new HKLrefl(h,k,l,t2));
-                }
-            }
-        }
-        //ordenem per 2theta
-        Collections.sort(refl_obs);
-        Collections.sort(refl_obs_merged);
-        Collections.sort(refl_ext);
-        
-        //calcul multiplicitat
-        Iterator<HKLrefl> itrHKL = refl_obs_merged.iterator();
-        float[] hs = new float[3];
-        float[][] ks = new float[32][3];
-        int nmat = this.getSg().getMat_SymAsyFloat12().size();
-        while (itrHKL.hasNext()){
-            HKLrefl hkl = itrHKL.next();
-            int mult = 0;
-            for (int i=0; i<nmat; i++) {
-                hs[0]= hkl.h*this.getSg().getMat_SymAsyFloat12().get(i)[0] + hkl.k*this.getSg().getMat_SymAsyFloat12().get(i)[3] + hkl.l*this.getSg().getMat_SymAsyFloat12().get(i)[6];
-                hs[1]= hkl.h*this.getSg().getMat_SymAsyFloat12().get(i)[1] + hkl.k*this.getSg().getMat_SymAsyFloat12().get(i)[4] + hkl.l*this.getSg().getMat_SymAsyFloat12().get(i)[7];
-                hs[2]= hkl.h*this.getSg().getMat_SymAsyFloat12().get(i)[2] + hkl.k*this.getSg().getMat_SymAsyFloat12().get(i)[5] + hkl.l*this.getSg().getMat_SymAsyFloat12().get(i)[8];
-                
-                if (mult!=0) {
-                    boolean loop = false;
-                    for (int j=0; j<mult; j++) {
-                        if ((hs[0]==ks[j][0]) && (hs[1]==ks[j][1]) && (hs[2]==ks[j][2]))loop=true;
-                        if ((hs[0]==-ks[j][0]) && (hs[1]==-ks[j][1]) && (hs[2]==-ks[j][2]))loop=true;
-                    }
-                    if(loop)continue;
-                }
-                
-                ks[mult][0] = hs[0];
-                ks[mult][1] = hs[1];
-                ks[mult][2] = hs[2];
-                mult = mult +1;
-            }
-            hkl.setMult(mult*2);
-        }
-    }
-    
-    public void printHKLobs() {
-        Iterator<HKLrefl> itrO = refl_obs.iterator();
-        int i = 0;
-        while (itrO.hasNext()) {
-            itrO.next().toString();
-            i = i+1;
-        }
-        log.debug(i+" reflections");
-
-    }
-
-    public void printHKLobsMerged() {
-        int i=0;
-        Iterator<HKLrefl> itrO = refl_obs_merged.iterator();
-        while (itrO.hasNext()) {
-            itrO.next().toString();
-            i = i+1;
-        }
-        log.debug(i+" reflections");
-
-    }
-    
-    public void printHKLext() {
-        int i=0;
-        Iterator<HKLrefl> itrE = refl_ext.iterator();
-        while (itrE.hasNext()) {
-            itrE.next().toString();
-            i = i+1;
-        }
-        log.debug(i+" reflections");
-    }
-    
-    
-    private void laue() {
-        ilaue = 0;
-        switch (sg.getMat_SymAsyFloat12().size()) {
-            case 1: // -1: ilaue=1
-                ilaue = 1;
-                ihmin = -ihmax;
-                ikmin = -ikmax;
-                break;
-            case 2: // 2/m: ilaue=2
-                ilaue = 2;
-                ihmin = -ihmax;
-                break;
-            case 4: //mmm: ilaue=3   +  4/m: ilaue=4
-                int isum = 0;
-                for (int i=0;i<4;i++) {
-                    isum = isum + (int)FastMath.abs(sg.getMat_SymAsyFloat12().get(i)[1]);
-                }
-                if (isum==0) {
-                    ilaue=3;
-                }else {
-                    ilaue=4;
-                }
-                break;
-            case 8: //4/mmm: ilaue=5
-                ilaue = 5;
-                break;
-            case 3: //-3(H): ilaue=6
-                ilaue = 6;
-                ilmin=-ilmax;
-                break;
-            case 6: //-31m(H): ilaue=7  -3m1(H):ilaue=8  6/m:ilaue=9
-                for (int i=0;i<6;i++) {
-                    int xx = (int)sg.getMat_SymAsyFloat12().get(i)[0];
-                    int yy = (int)sg.getMat_SymAsyFloat12().get(i)[4];
-                    int zz = (int)sg.getMat_SymAsyFloat12().get(i)[8];
-                    int yx = (int)sg.getMat_SymAsyFloat12().get(i)[3];
-                    int xy = (int)sg.getMat_SymAsyFloat12().get(i)[1];
-                    
-                    if ((xx==-1)&&(yy==1)&&(zz==1)&&(yx==-1)) {
-                        ilaue = 7;
-                        ilmin=-ilmax;
-                    }
-                    if ((xx==1)&&(yy==-1)&&(zz==-1)&&(yx==1)) {
-                        ilaue = 7;
-                        ilmin=-ilmax;
-                    }
-                    if ((xx==-1)&&(yy==1)&&(zz==1)&&(xy==1)) {
-                        ilaue = 8;
-                    }
-                    if ((xx==1)&&(yy==-1)&&(zz==-1)&&(xy==-1)) {
-                        ilaue = 8;
-                    }
-                }
-                if (ilaue==0) ilaue = 9;
-                break;
-            case 12: //6/mmm: ilaue=10  m-3: ilaue=11
-                isum = 0;
-                for (int i=0;i<12;i++) {
-                    isum = isum + (int)FastMath.abs(sg.getMat_SymAsyFloat12().get(i)[8]);
-                }
-                if (isum==12) {
-                    ilaue=10;
-                }else {
-                    ilaue=11;
-                }
-                break;
-            case 24: //m-3m: ilaue=12
-                ilaue = 12;
-                break;
-        }
-    }
-    
-    // limits unitat asimètrica espai recíproc
-    private void asiuni(int h, int k, int l) { 
-        switch(ilaue) {
-            case 1:
-                if ((l==0)&&(k<0))return;
-                if ((l==0)&&(k==0)&&(h<0))return;
-                ind = 1;
-                break;
-            case 2:
-                if ((l==0)&&(h<0))return;
-                ind = 1;
-                break;
-            case 3:
-                ind = 1;
-                break;
-            case 4:
-                if ((h==0)&&(k>0))return;
-                ind = 1;
-                break;
-            case 5:
-                if (h>=k)ind=1;
-                break;
-            case 6:
-                if ((k==0)&&(l<0))return;
-                if ((h==0)&&(l<=0))return;
-                ind=1;
-                break;
-            case 7:
-                if (h>=k)ind=1;
-                if ((k==0)&&(l<0))ind=0;
-                break;
-            case 8:
-                if ((l==0)&&(h<k))return;
-                ind=1;
-                break;
-            case 9:
-                if ((h==0)&&(k>0))return;
-                ind=1;
-                break;
-            case 10:
-                if (h>=k)ind=1;
-                break;
-            case 11:
-                if ((k>=h)&&(l>=h))ind=1;
-                if ((h==l)&&(h<k))ind=0;
-                break;
-            case 12:
-                if ((l>=k)&&(k>=h))ind=1;
-                break;
-        }
-    }
-    
-    // lattice extinctions
-    private void exlatt(int h, int k, int l) {
-        int i2 = (k+l)%2;
-        int i3 = (h+l)%2;
-        int i4 = (h+k)%2;
-        int i6 = (h+k+l)%2;
-        int i7 = (-h+k+l)%3;
-        switch (sg.getXarxa()) {
-            case 'p':
-                ind = 1;
-                break;
-            case 'a':
-                if (i2==0)ind=1;
-                break;
-            case 'b':
-                if (i3==0)ind=1;
-                break;
-            case 'c':
-                if (i4==0)ind=1;
-                break;
-            case 'f':
-                if ((i2==0)&&(i3==0)&&(i4==0))ind=1;
-                break;
-            case 'i':
-                if (i6==0)ind=1;
-                break;
-            case 'r':
-                if (i7==0)ind=1;
-                break;
-        }
-    }
-
-    // traslation extinctions
-    private void extras(int h, int k, int l) {
-        int iter = 1;
-        if (sg.isCentro()) iter = 2;
-        int signe = -1;
-        
-        for (int i=0;i<iter;i++) {
-            signe = signe*-1;
-            for (int j=0; j<sg.getMat_SymAsyFloat12().size();j++) {
-                float tr = h*sg.getMat_SymAsyFloat12().get(j)[9]+k*sg.getMat_SymAsyFloat12().get(j)[10]+l*sg.getMat_SymAsyFloat12().get(j)[11];
-                float ihr = h*sg.getMat_SymAsyFloat12().get(j)[0]+k*sg.getMat_SymAsyFloat12().get(j)[3]+l*sg.getMat_SymAsyFloat12().get(j)[6];
-                float ikr = h*sg.getMat_SymAsyFloat12().get(j)[1]+k*sg.getMat_SymAsyFloat12().get(j)[4]+l*sg.getMat_SymAsyFloat12().get(j)[7];
-                float ilr = h*sg.getMat_SymAsyFloat12().get(j)[2]+k*sg.getMat_SymAsyFloat12().get(j)[5]+l*sg.getMat_SymAsyFloat12().get(j)[8];
-                int ips = (int) ((360*signe*tr)%360);
-                if ((h==(signe*ihr))&&(k==(signe*ikr))&&(l==(signe*ilr))&&(ips!=0))return;
-            }
-        }
-        ind = 1;
-    }
-
-    public void getAllfromCIF(String cif_file_path) {
-        Cif_file cf = new Cif_file(cif_file_path);
+    private void getAllfromCIF(Cif_file cf) {
         this.atoms = new ArrayList<Atom>();
         for (int i=0; i<cf.getNAtoms();i++) {
             //put in the unit cell
@@ -386,17 +105,292 @@ public class Cell {
         this.al=(float) FastMath.toRadians(cf.getAl());
         this.be=(float) FastMath.toRadians(cf.getBe());
         this.ga=(float) FastMath.toRadians(cf.getGa());
-        this.sg = new SpaceGroup(cf.getSgNum());
-        
+        this.sg = CellSymm_global.getSpaceGroupByNum(cf.getSgNum());
     }
+    
+    private void getAllfromCIF(String cif_file_path,boolean confirmReadedCifDataDialog) {
+        Cif_file cf = new Cif_file(cif_file_path,confirmReadedCifDataDialog);
+        getAllfromCIF(cf);
+    }
+    
+    private void initCalcs() {
+        this.calcMetricMatrix();
+        this.calcGstarMatrix();
+        this.calcReciprocalParameters(); //NO CALDRIA
+    }
+    
+    private void setMaxSymmSG() {
+        switch (this.cf) {
+        case CUBIC:this.sg=CellSymm_global.getSpaceGroupByNum(221);break;
+        case HEXA:this.sg=CellSymm_global.getSpaceGroupByNum(191);break;
+        case MONO:this.sg=CellSymm_global.getSpaceGroupByNum(10);break;
+        case ORTO:this.sg=CellSymm_global.getSpaceGroupByNum(47);break;
+        case TETRA:this.sg=CellSymm_global.getSpaceGroupByNum(123);break;
+        case TRIC:this.sg=CellSymm_global.getSpaceGroupByNum(2);break;
+        //TODO:ferho per sistema? cal afegir trigonal o rhombo??
+        default:this.sg=CellSymm_global.getSpaceGroupByNum(2);break;
+        }
+    }
+    
+    public void calcMetricMatrix() {
+        G = MatrixUtils.createRealMatrix(3, 3); //rows, columns
+        G.setEntry(0, 0, a*a);
+        G.setEntry(1, 1, b*b);
+        G.setEntry(2, 2, c*c);
+        G.setEntry(0, 1, a*b*FastMath.cos(ga));
+        G.setEntry(0, 2, a*c*FastMath.cos(be));
+        G.setEntry(1, 0, G.getEntry(0, 1));
+        G.setEntry(2, 0, G.getEntry(0, 2));
+        G.setEntry(2, 1, b*c*FastMath.cos(al));
+        G.setEntry(1, 2, G.getEntry(2, 1));
+//        return G;
+    }
+    
+    public void calcGstarMatrix() {
+        Gstar=null;
+        try {
+            Gstar = MatrixUtils.inverse(G);  
+        }catch(Exception e) {
+            System.out.println(e.getMessage()+" Error inverting metric matrix");
+            e.printStackTrace();
+        }
+//        return Gstar;
+    }
+    
+    public void calcReciprocalParameters() {
+        aStar = FastMath.sqrt(Gstar.getEntry(0, 0));
+        bStar = FastMath.sqrt(Gstar.getEntry(1, 1));
+        cStar = FastMath.sqrt(Gstar.getEntry(2, 2));
+        gaStar = FastMath.acos(Gstar.getEntry(0, 1)/(aStar*bStar)); 
+        beStar = FastMath.acos(Gstar.getEntry(0, 2)/(aStar*cStar));
+        alStar = FastMath.acos(Gstar.getEntry(2, 1)/(cStar*bStar));
+        log.writeNameNumPairs("config", true, "aStar,bStar,cStar, alStar,beStar,gaStar", aStar,bStar,cStar, alStar,beStar,gaStar);
+    }
+
+    private int[] limithkl_GeneralEQ(double Qmax) {
+        int[] maxHKL = new int[3];
+
+        maxHKL[0]=(int) FastMath.round(FastMath.sqrt(Qmax/Gstar.getEntry(0, 0)));
+        maxHKL[1]=(int) FastMath.round(FastMath.sqrt(Qmax/Gstar.getEntry(1, 1)));
+        maxHKL[2]=(int) FastMath.round(FastMath.sqrt(Qmax/Gstar.getEntry(2, 2)));
+        
+        return maxHKL;
+    }
+    
+    //takes into consideration the limits according to the crystal family (max/min)
+    private int[] limithkl_MaxMin_GeneralEQ(double Qmax) {
+        int[] maxminHKL = new int[6];
+
+        maxminHKL[0]=(int) FastMath.round(FastMath.sqrt(Qmax/Gstar.getEntry(0, 0)));
+        maxminHKL[1]=(int) FastMath.round(FastMath.sqrt(Qmax/Gstar.getEntry(1, 1)));
+        maxminHKL[2]=(int) FastMath.round(FastMath.sqrt(Qmax/Gstar.getEntry(2, 2)));
+        maxminHKL[3]=0;
+        maxminHKL[4]=0;
+        maxminHKL[5]=0;
+        
+        switch(this.cf) {
+        case CUBIC: // m-3m: ilaue=12
+          //nothing
+            break;
+        case TETRA: // 4/mmm: ilaue=5
+            //nothing
+            break;
+        case HEXA:  // 6/mmm (ilaue=10)
+          //nothing
+            break;
+        case ORTO:  // mmm: ilaue=3
+            //nothing
+            break;
+        case MONO:  // 2/m: ilaue=2
+            maxminHKL[3]=-maxminHKL[0];
+            break;
+        case TRIC:  // -1: ilaue=1
+            maxminHKL[3]=-maxminHKL[0];
+            maxminHKL[4]=-maxminHKL[1];
+            break;
+        default:
+            break;
+        }
+        
+        return maxminHKL;
+    }
+    
+    //aquest es pelat, bo per la indexacio
+    public  ArrayList<HKLrefl> generateHKLsAsymetricUnitCrystalFamily(double Qmax){
+        return this.generateHKLsAsymetricUnitCrystalFamily(Qmax,false,false,false,false);
+    }
+    
+    //AQUEST ES COMPLERT
+    //genera la llista d'hkls de la UNITAT ASIMÈTRICA per la família cristal·lina de la cel·la (opcinos de consdierar centratges i/o grup espacial)
+    public  ArrayList<HKLrefl> generateHKLsAsymetricUnitCrystalFamily(double Qmax, boolean exCentering, boolean exSymmetry, boolean sortbytth, boolean calcMultiplicity) {
+        int[] maxminHKL = this.limithkl_MaxMin_GeneralEQ(Qmax);
+        int ihmax = maxminHKL[0];
+        int ikmax = maxminHKL[1];
+        int ilmax = maxminHKL[2];
+        int ihmin = maxminHKL[3];
+        int ikmin = maxminHKL[4];
+        int ilmin = maxminHKL[5];
+        
+        log.configf("Max/Min HKL for cell %.4f %.4f %.4f %.3f %.3f %.3f are [%d %d %d]/[%d %d %d]",this.a,this.b,this.c,getAlfaDeg(),getBetaDeg(),getGammaDeg(),ihmax,ikmax,ilmax,ihmin,ikmin,ilmin);
+        log.config("crystal family: "+this.cf);
+        
+        refl_allowed_asy = new ArrayList<HKLrefl>();
+        
+        for (int l=ilmin;l<=ilmax;l++) {
+            for (int k=ikmin;k<=ikmax;k++) {
+                for (int h=ihmin;h<=ihmax;h++) {
+                    if ((h==0)&&(k==0)&&(l==0))continue;
+                    
+                    switch(this.cf) {
+                    case CUBIC: // m-3m: ilaue=12
+                        if ((h<k)&&(k<l))continue;
+                        if ((h*h+k*k+l*l)>maxminHKL[0]*maxminHKL[0]) continue; //TODO: revisar
+                        break;
+                    case TETRA: // 4/mmm: ilaue=5
+                        if (h<k)continue;
+                        break;
+                    case HEXA:  // 6/mmm (ilaue=10)
+                        if (h<k)continue;
+                        break;
+                    case ORTO:  // mmm: ilaue=3
+                        //s'accepten totes??
+                        break;
+                    case MONO:  // 2/m: ilaue=2
+                        if ((l==0)&&(h<0))continue; //hauria de ser h>=0?
+                        break;
+                    case TRIC:  // -1: ilaue=1
+                        if ((l==0)&&(k<0))continue;
+                        if ((l==0)&&(k==0)&&(h<0))continue;
+                        break;
+                    default:
+                        break;
+                    }
+                    
+                    if (exCentering) {
+                        //considerar extincions degudes a centratge
+                        if (!isReflectionAllowedByCentering(h,k,l))continue;
+                    }
+                    
+                    if (exSymmetry) {
+                        //considerar extincions degudes a traslacions del grup espacial
+                        if (!isReflectionAllowedBySymmetry(h,k,l))continue;
+                    }
+                    
+                    // si arribem aquí es que pertany a la unitat asimetrica amb les condicions acordades (simetria, traslacions)
+                    refl_allowed_asy.add(new HKLrefl(h,k,l,this.calcDspHKL(h, k, l),this)); //TODO COMPARAR LA VELOCIAT AMB I SENSE CALCULAR DSPACING (i activar ordenament en consequencia
+                }
+            }
+        }
+        
+        if (sortbytth) {
+            Collections.sort(refl_allowed_asy);  
+        }
+        
+        if (calcMultiplicity) {
+            Iterator<HKLrefl> itrHKL = refl_allowed_asy.iterator();
+            while (itrHKL.hasNext()){
+                HKLrefl hkl = itrHKL.next();
+                sg.calcMultiplicityReflection(hkl);
+            }
+        }
+        log.debug("num. refls. "+refl_allowed_asy.size());
+        return refl_allowed_asy;
+    }
+    
+    public double calcDspHKL(int h, int k, int l) {
+        double a2 = a*a;
+        double b2 = b*b;
+        double c2 = c*c;
+        double sbe = FastMath.sin(be);
+        double cbe = FastMath.cos(be);
+        double sal = FastMath.sin(al);
+        double cal = FastMath.cos(al);
+        double sga = FastMath.sin(ga);
+        double cga = FastMath.cos(ga);
+        
+        double hsqcalc = b2*c2*sal*sal*h*h + a2*c2*sbe*sbe*k*k + a2*b2*sga*sga*l*l + 2*a*b*c2*(cal*cbe-cga)*h*k + 2*a2*b*c*(cbe*cga-cal)*k*l + 2*a*b2*c*(cga*cal-cbe)*h*l;
+        double v2 = (a*b*c*FastMath.sqrt(1-cal*cal-cbe*cbe-cga*cga+2*cal*cbe*cga));
+        v2 = v2*v2;
+        hsqcalc = hsqcalc/v2;
+        double dcalc = FastMath.sqrt(1/hsqcalc);
+        return dcalc;
+    }
+    
+    public String getListAsString_HKLMerged_dsp_Fc2() {
+        Iterator<HKLrefl> itrO = refl_allowed_asy.iterator();
+        StringBuilder sb = new StringBuilder();
+        while (itrO.hasNext()) {
+            sb.append(itrO.next().toString_HKL_D_Fc2());
+            sb.append(System.lineSeparator());
+        }
+        return sb.toString();
+
+    }
+    
+    public String getListAsString_HKLMerged_tth_mult_Fc2(float wave) {
+        Iterator<HKLrefl> itrO = refl_allowed_asy.iterator();
+        StringBuilder sb = new StringBuilder();
+        while (itrO.hasNext()) {
+            sb.append(itrO.next().toString_HKL_tth_mult_Fc2(wave));
+            sb.append(System.lineSeparator());
+        }
+        return sb.toString();
+
+    }
+    
+    public String getListAsString_HKLextinct_dsp_Fc2() {
+        Iterator<HKLrefl> itrO = refl_extinct_asy.iterator();
+        StringBuilder sb = new StringBuilder();
+        while (itrO.hasNext()) {
+            sb.append(itrO.next().toString_HKL_D_Fc2());
+            sb.append(System.lineSeparator());
+        }
+        return sb.toString();
+    }
+
+    
+    // Extincions degudes al reticle (TODO: moure a SG?... el deixo aqui per si volgues canviar centratge i no grup...
+    private boolean isReflectionAllowedByCentering(int h, int k, int l) {
+        boolean hpar = h%2==0;
+        boolean kpar = k%2==0;
+        boolean lpar = l%2==0;
+        boolean klpar = (k+l)%2==0;
+        boolean hlpar = (h+l)%2==0;
+        boolean hkpar = (h+k)%2==0;
+        boolean hklpar = (h+k+l)%2==0;
+        boolean r1 = (-h+k+l)%3==0;
+        boolean r2 = (h-k+l)%3==0;
+        switch (this.cc) {
+        case A:if (klpar) return true;
+        case B:if (hlpar) return true;
+        case C:if (hkpar) return true;
+        case F:
+            if (hpar&&kpar&&lpar)return true;
+            if (!hpar&&!kpar&&!lpar)return true;
+            return false;
+        case I:if (hklpar)return true;
+        case P:return true;
+        case R:
+            if (r1)return true;
+            if (r2)return true;
+            return false;
+        default:return true;
+        }
+    }
+    
+    //   Extincions degudes a les translacions
+    private boolean isReflectionAllowedBySymmetry(int h, int k, int l) {
+        return sg.isReflectionAllowedBySymmetry(h, k, l);
+    }
+
    
-    public void calcInten(float wave) {
+    public void calcInten(boolean estimBiso) {
         try {
             if(atoms.size()<=0) {
                 log.info("no atoms found");
                 return;
             }
-            if(refl_obs.size()<=0) {
+            if(refl_allowed_asy.size()<=0) {
                 log.info("no reflections found");
                 return;
             }
@@ -405,156 +399,41 @@ public class Cell {
             log.info("atoms or reflections missing");
             return;
         }
-        float tolposAtoms = 0.01f;
         
         //primer mirarem els atoms independents despres d'aplicar totes les operacions de simetria
         ArrayList<Atom> indAt = new ArrayList<Atom>();
-        int nmat = this.getSg().getMat_SymAsyFloat12().size();
-        int ntranslat = (int) (this.getSg().getMat_transFloat3().length/3.);
-        Iterator<Atom> itrat = atoms.iterator();
-        while(itrat.hasNext()) {
-            int multAtom = 0;
-            Atom at = itrat.next();
-            for (int j=0;j<nmat;j++) {
-                float xn = this.getSg().getMat_SymAsyFloat12().get(j)[0]*at.getXcryst() + this.getSg().getMat_SymAsyFloat12().get(j)[3]*at.getYcryst() + this.getSg().getMat_SymAsyFloat12().get(j)[6]*at.getZcryst();
-                xn = xn + this.getSg().getMat_SymAsyFloat12().get(j)[9]; //9 es trasl x
-                float yn = this.getSg().getMat_SymAsyFloat12().get(j)[1]*at.getXcryst() + this.getSg().getMat_SymAsyFloat12().get(j)[4]*at.getYcryst() + this.getSg().getMat_SymAsyFloat12().get(j)[7]*at.getZcryst();
-                yn = yn + this.getSg().getMat_SymAsyFloat12().get(j)[10];
-                float zn = this.getSg().getMat_SymAsyFloat12().get(j)[2]*at.getXcryst() + this.getSg().getMat_SymAsyFloat12().get(j)[5]*at.getYcryst() + this.getSg().getMat_SymAsyFloat12().get(j)[8]*at.getZcryst();
-                zn = zn + this.getSg().getMat_SymAsyFloat12().get(j)[11];
-                
-                //posem a la cel·la unitat
-                xn = xn + 20.0f;
-                xn = xn%((int)FastMath.floor(xn));
-                yn = yn + 20.0f;
-                yn = yn%((int)FastMath.floor(yn));
-                zn = zn + 20.0f;
-                zn = zn%((int)FastMath.floor(zn));
-                
-                log.writeNameNumPairs("config", true, "xn,yn,zn", xn,yn,zn);
-                Iterator<Atom> itrAtInd = indAt.iterator();
-                boolean existing = false;
-                while (itrAtInd.hasNext()){
-                    Atom atInd = itrAtInd.next();
-                    if ((FastMath.abs(atInd.getXcryst()-xn)<tolposAtoms) &&
-                            (FastMath.abs(atInd.getYcryst()-yn)<tolposAtoms) &&
-                            (FastMath.abs(atInd.getZcryst()-zn)<tolposAtoms)) {
-                        //son iguals
-                        log.debug("atom existing");
-                        existing = true;
-                    }
-                }
-                if (!existing) {
-                    indAt.add(new Atom(at.getTipus(),at.getLabel(),xn,yn,zn,at.getOcupancy(),at.getAdp()));    
-                    multAtom = multAtom +1;
-                }
-            }
-            
-            //ho repeteixo en el cas que sigui centrosimetric
-            if (this.getSg().isCentro()) {
-                for (int j=0;j<nmat;j++) {
-                    float xn = this.getSg().getMat_SymAsyFloat12().get(j)[0]*at.getXcryst()*-1 + this.getSg().getMat_SymAsyFloat12().get(j)[3]*at.getYcryst()*-1 + this.getSg().getMat_SymAsyFloat12().get(j)[6]*at.getZcryst()*-1;
-                    xn = xn + this.getSg().getMat_SymAsyFloat12().get(j)[9]; //9 es trasl x
-                    float yn = this.getSg().getMat_SymAsyFloat12().get(j)[1]*at.getXcryst()*-1 + this.getSg().getMat_SymAsyFloat12().get(j)[4]*at.getYcryst()*-1 + this.getSg().getMat_SymAsyFloat12().get(j)[7]*at.getZcryst()*-1;
-                    yn = yn + this.getSg().getMat_SymAsyFloat12().get(j)[10];
-                    float zn = this.getSg().getMat_SymAsyFloat12().get(j)[2]*at.getXcryst()*-1 + this.getSg().getMat_SymAsyFloat12().get(j)[5]*at.getYcryst()*-1 + this.getSg().getMat_SymAsyFloat12().get(j)[8]*at.getZcryst()*-1;
-                    zn = zn + this.getSg().getMat_SymAsyFloat12().get(j)[11];
-                    
-                    //posem a la cel·la unitat
-                    xn = xn + 20.0f;
-                    xn = xn%((int)FastMath.floor(xn));
-                    yn = yn + 20.0f;
-                    yn = yn%((int)FastMath.floor(yn));
-                    zn = zn + 20.0f;
-                    zn = zn%((int)FastMath.floor(zn));
-                    
-                    log.writeNameNumPairs("config", true, "xn,yn,zn", xn,yn,zn);
-                    Iterator<Atom> itrAtInd = indAt.iterator();
-                    boolean existing = false;
-                    while (itrAtInd.hasNext()){
-                        Atom atInd = itrAtInd.next();
-                        if ((FastMath.abs(atInd.getXcryst()-xn)<tolposAtoms) &&
-                                (FastMath.abs(atInd.getYcryst()-yn)<tolposAtoms) &&
-                                (FastMath.abs(atInd.getZcryst()-zn)<tolposAtoms)) {
-                            //son iguals
-                            log.debug("atom existing");
-                            existing = true;
-                        }
-                    }
-                    if (!existing) {
-                        indAt.add(new Atom(at.getTipus(),at.getLabel(),xn,yn,zn,at.getOcupancy(),at.getAdp()));    
-                        multAtom = multAtom +1;
-                    }
-                }
-            }
-            
-            log.debug(at.getLabel()+ " indep pos after symm= "+multAtom);
-            for (int j=0;j<ntranslat;j++) {
-                int index = j*3;
-                float xn = this.getSg().getMat_transFloat3()[index]+at.getXcryst();
-                float yn = this.getSg().getMat_transFloat3()[index+1]+at.getYcryst();
-                float zn = this.getSg().getMat_transFloat3()[index+2]+at.getZcryst();
-                //posem a la cel·la unitat
-                xn = xn + 20.0f;
-                xn = xn%((int)FastMath.floor(xn));
-                yn = yn + 20.0f;
-                yn = yn%((int)FastMath.floor(yn));
-                zn = zn + 20.0f;
-                zn = zn%((int)FastMath.floor(zn));
-                log.writeNameNumPairs("config", true, "xn,yn,zn", xn,yn,zn);
-                Iterator<Atom> itrAtInd = indAt.iterator();
-                boolean existing = false;
-                while (itrAtInd.hasNext()){
-                    Atom atInd = itrAtInd.next();
-                    if ((FastMath.abs(atInd.getXcryst()-xn)<tolposAtoms) &&
-                            (FastMath.abs(atInd.getYcryst()-yn)<tolposAtoms) &&
-                            (FastMath.abs(atInd.getZcryst()-zn)<tolposAtoms)) {
-                        existing = true;
-                    }
-                }
-                if (!existing) {
-                    indAt.add(new Atom(at.getTipus(),at.getLabel(),xn,yn,zn,at.getOcupancy(),at.getAdp()));    
-                    multAtom = multAtom +1;
-                }
-
-            }
-            log.debug(at.getLabel()+ " indep pos after translat = "+multAtom);
-            at.setMultiplicityPosition(multAtom);
-            log.debug(at.getLabel()+" multiplicity = "+at.getMultiplicityPosition());
-            log.debug("sg multiplicity general = "+this.getSg().getMaxMultiSG());
+    
+        
+        for(Atom at:atoms) {
+            indAt.addAll(at.getEquivalents(this.sg,true,true,true));
         }
+        
         log.debug("total indepenent atoms = "+indAt.size());
         
-        //ARA CALCULEM ELS FACTORS D'ESTRUCTURA
-        Iterator<HKLrefl> itrhkl = refl_obs_merged.iterator();
-        while (itrhkl.hasNext()) {
-            HKLrefl hkl = itrhkl.next();
-            double A = 0;
-            double B = 0;
-            Iterator<Atom> itrIndAt = indAt.iterator();
-            while (itrIndAt.hasNext()){
-                Atom at = itrIndAt.next();
-                double f0 = AtomProperties.calcfform_cromer(at.getTipus(), wave, hkl.t2);
-                double cos = FastMath.cos((FastMath.PI*2)*(hkl.h*at.getXcryst()+hkl.k*at.getYcryst()+hkl.l*at.getZcryst()));
-                double sin = FastMath.sin((FastMath.PI*2)*(hkl.h*at.getXcryst()+hkl.k*at.getYcryst()+hkl.l*at.getZcryst()));
-                //considerem iso 0.05
-                float meanDisplacementA = 0.05f;
-                try {
-                    meanDisplacementA = at.getAdp();    
-                }catch(Exception e) {
-                    log.debug("no adp found");
-                }
-                
-                float Biso = (float) (8 * (FastMath.PI * FastMath.PI) * (meanDisplacementA * meanDisplacementA));
-                float ST_L = (float) (FastMath.sin(FastMath.toRadians(hkl.t2)/2)/wave);
-                float fB = (float) FastMath.exp(-1*Biso*ST_L*ST_L);
-                A = A + f0 * cos * fB;
-                B = B + f0 * sin * fB;
-            }
-            hkl.ycalc = (A*A + B*B);
+        for(HKLrefl hkl:refl_allowed_asy) {
+            hkl.calcY(indAt, estimBiso);
         }
     }
     
+    public void normIntensities(float maxI) {
+        //primer busquem factor
+        Iterator<HKLrefl> itrO = refl_allowed_asy.iterator();
+        double maxIref = 0;
+        while (itrO.hasNext()) {
+            HKLrefl h = itrO.next();
+            if(h.ycalc>maxIref)maxIref = h.ycalc;
+        }
+        double factor = maxI/maxIref;
+        //now we apply factor
+        itrO = refl_allowed_asy.iterator();
+        while (itrO.hasNext()) {
+            HKLrefl h = itrO.next();
+            h.ycalc=h.ycalc*factor;
+        }
+    }
+    
+    
+    //TODO: AQUESTA PART DE CREACIO DEL PATTERN ENCARA S'HA D'ARREGLAR, REVISAR I IMPLEMENTAR COM I ON TOCA
     private class PointPatt1D{
         double t2;
         double ycal;
@@ -570,10 +449,10 @@ public class Cell {
         while (t2p < t2f) {
             double inten = 0;
             //contribucio de les reflexions al punt
-            Iterator<HKLrefl> itrhkl = refl_obs_merged.iterator();
+            Iterator<HKLrefl> itrhkl = refl_allowed_asy.iterator();
             while (itrhkl.hasNext()) {
                 HKLrefl hkl = itrhkl.next();
-                double wu = 0.25*(hkl.h*hkl.h*cr11+hkl.k*hkl.k*cr22+hkl.l*hkl.l*cr33+2*(hkl.h*hkl.k*cr12+hkl.h*hkl.l*cr13+hkl.k*hkl.l*cr23));
+                double wu = 0.25*(hkl.h*hkl.h*Gstar.getEntry(0, 0)+hkl.k*hkl.k*Gstar.getEntry(1, 1)+hkl.l*hkl.l*Gstar.getEntry(2, 2)+2*(hkl.h*hkl.k*Gstar.getEntry(0, 1)+hkl.h*hkl.l*Gstar.getEntry(0, 2)+hkl.k*hkl.l*Gstar.getEntry(1, 2)));
                 double t2deg = 2*FastMath.toDegrees(FastMath.asin(waveA*FastMath.sqrt(wu)));
                 double thrad = FastMath.toRadians(t2deg/2);
                 double lorentz = 1/((4*FastMath.sin(thrad)*FastMath.sin(thrad)*FastMath.cos(thrad)));
@@ -614,6 +493,14 @@ public class Cell {
         this.sg = sg;
     }
     
-    
+    private double getAlfaDeg() {
+        return FastMath.toDegrees(this.al);
+    }
+    private double getBetaDeg() {
+        return FastMath.toDegrees(this.be);
+    }
+    private double getGammaDeg() {
+        return FastMath.toDegrees(this.ga);
+    }
     
 }
