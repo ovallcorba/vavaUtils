@@ -601,7 +601,7 @@ public class LogJTextArea extends JTextArea implements ActionListener {
      * Saves the text to a file (fchooser)
      */
     private void saveToFile(){
-    	File f = FileUtils.fchooser(null, new File(System.getProperty("user.dir")), null, true);
+    	File f = FileUtils.fchooserSaveAsk(null, new File(System.getProperty("user.dir")), null, null);
     	if (f!=null){
     		try{
                 BufferedWriter out = new BufferedWriter(new FileWriter(f));

@@ -4,23 +4,29 @@
  */
 package com.vava33.jutils;
 
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.Desktop;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.math.BigDecimal;
+import java.net.URI;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.regex.Pattern;
-import java.math.BigDecimal;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
+import org.apache.commons.math3.util.FastMath;
 
 
 /**
@@ -77,7 +83,7 @@ public final class FileUtils {
 
     /** The Decimal Format Symbols for current Locale. */
     private static DecimalFormatSymbols mySymbols = new DecimalFormatSymbols(
-            FileUtils.currentlocale);
+            FileUtils.defaultLocale);
     
     /** The Operating System. */
     private static String os = "win";
@@ -85,6 +91,11 @@ public final class FileUtils {
     /** The separator character. */
     private static String separator = System.getProperty("file.separator");
 
+    /** time stamps **/
+    public static SimpleDateFormat fHora = new SimpleDateFormat("[HH:mm]");
+    public static final SimpleDateFormat fDiaHora = new SimpleDateFormat("[yyyy-MM-dd 'at' HH:mm]");
+    
+    // M�tode que afegeix un car�cter enmig d'un CharArray
     /**
      * Adds to char array.
      *
@@ -115,7 +126,7 @@ public final class FileUtils {
      * @param b the byte array
      * @return the int
      */
-    public static int B1UnsigtoInt(byte b) {
+    public static int B1toInt_unsigned(byte b) {
         int result = (0xFF & b);
         return result;
     }
@@ -126,7 +137,7 @@ public final class FileUtils {
      * @param b the byte array
      * @return the int
      */
-    public static int B2toInt(byte[] b) {
+    public static int B2toInt_LE_unsigned(byte[] b) {
         int result = (((0xFF & b[1]) << 8) | (0xFF & b[0]));
         return result;
     }
@@ -149,9 +160,52 @@ public final class FileUtils {
      * @param b the byte array
      * @return the int
      */
-    public static int B4toInt(byte[] b) {
+    public static int B4toInt_LE_signed(byte[] b) {
         return (b[0] & 0xFF) | ((b[1] & 0xFF) << 8)
                 | ((b[2] & 0xFF) << 16) | ((b[3] & 0xFF) << 24);
+    }
+    
+    //general 
+    public static int ByteArrayToInt_signed(byte[] b,boolean littleEndian) {
+    	
+    	int x = 0;
+    	long xl = 0;
+
+    	switch (b.length){
+    		case 2:
+    	    	if (littleEndian) {
+    	    		x = java.nio.ByteBuffer.wrap(b).order(java.nio.ByteOrder.LITTLE_ENDIAN).getShort();	
+    	    	}else {
+    	    		x = java.nio.ByteBuffer.wrap(b).getShort();	
+    	    	}    			
+    			break;
+    		case 4:
+    	    	if (littleEndian) {
+    	    		x = java.nio.ByteBuffer.wrap(b).order(java.nio.ByteOrder.LITTLE_ENDIAN).getInt();	
+    	    	}else {
+    	    		x = java.nio.ByteBuffer.wrap(b).getInt();	
+    	    	}
+    			break;
+    		case 8:
+    	    	if (littleEndian) {
+    	    		xl = java.nio.ByteBuffer.wrap(b).order(java.nio.ByteOrder.LITTLE_ENDIAN).getLong();	
+    	    	}else {
+    	    		xl = java.nio.ByteBuffer.wrap(b).getLong();	
+    	    	}
+    	    	x = (int) xl;
+    			break;
+    	}
+    	
+    	return x;
+    }
+    
+    public static String bytesToHex(byte[] hashInBytes) {
+
+        StringBuilder sb = new StringBuilder();
+        for (byte b : hashInBytes) {
+            sb.append(String.format("%02x", b));
+        }
+        return sb.toString();
     }
         
     /**
@@ -306,8 +360,12 @@ public final class FileUtils {
     /**
      * Detect Operating System, only WIN i LIN. Si no es cap
      *  dels dos es tractara com a WINDOWS per defecte
+     * 
+     * Gets the os.
+     *
+     * @return the os
      */
-    public static void detectOS() {
+    public static String getOS() {
         //mirem versio java
         String javav = System.getProperty("java.version");
         // mirem sistema operatiu:
@@ -315,13 +373,17 @@ public final class FileUtils {
         if (ops.indexOf("win") >= 0) {
             System.out.println(String.format("Running on Windows [java %s]",javav));
             FileUtils.setOS("win");
+        } else if (os.indexOf("mac") >= 0) {
+            System.out.println(String.format("Running on Mac [java %s]",javav));
+        	FileUtils.setOS("mac");
         } else if ((ops.indexOf("nix") >= 0) || (ops.indexOf("nux") >= 0)
                 || (ops.indexOf("aix") > 0)) {
-            System.out.println(String.format("Running on Unix or Linux [java %s]",javav));
+            System.out.println(String.format("Running on Linux [java %s]",javav));
             FileUtils.setOS("lin");
         } else {
             System.out.println("Your OS is not supported!!");
         }
+        return FileUtils.os;
     }
 
     /**
@@ -348,20 +410,25 @@ public final class FileUtils {
      * @param multipleSelection allow multiple selection?
      * @param save is it a save dialog?
      * @param askowrite ask if overwrite?
+     * @param forcedExtension null to not force any, string of the extension otherwise
+     * @param title null for default
      * @return the opened file
      */
-    public static File fchooser(Component parent, File startDir, FileNameExtensionFilter[] filter, int defaultFilterIndex, boolean save, boolean askowrite) {
+    private static File fchooser(Component parent, File startDir, FileNameExtensionFilter[] filter, int defaultFilterIndex, boolean save, boolean askowrite, String forcedExtension, String title) {
         // Creem un filechooser per seleccionar el fitxer obert
         JFileChooser fileChooser = new JFileChooser();
         if(startDir==null){
             startDir=new File(System.getProperty("user.dir"));
         }
-        fileChooser.setCurrentDirectory(startDir); // directori inicial: el del
+        fileChooser.setCurrentDirectory(startDir); // directori inicial
         if (filter != null) {
             for (int i = 0; i < filter.length; i++) {
                 fileChooser.addChoosableFileFilter(filter[i]);
             }
             fileChooser.setFileFilter(filter[defaultFilterIndex]);
+        }
+        if (title!=null) {
+            fileChooser.setDialogTitle(title);
         }
         int selection;
         if(save){
@@ -372,11 +439,21 @@ public final class FileUtils {
         // si s'ha seleccionat un fitxer
         if (selection == JFileChooser.APPROVE_OPTION) {
             File f = fileChooser.getSelectedFile();
-            if (askowrite){
-                if (f.exists()&& save){
-                    int actionDialog = JOptionPane.showConfirmDialog(parent,
-                            "Replace existing file?");
-                    if (actionDialog == JOptionPane.NO_OPTION)return null;
+            //aleshores si es SAVE cal potser forçar extensió i mirar si existeix
+            if (save) {
+            	if ((filter != null)&&(FileUtils.getExtension(f).isEmpty())) {
+            		FileNameExtensionFilter selfilt = (FileNameExtensionFilter)fileChooser.getFileFilter();
+            		String extension = selfilt.getExtensions()[0];
+            		f = FileUtils.canviExtensio(f, extension);
+            	}
+                if (forcedExtension!=null) {
+                    f = FileUtils.canviExtensio(f, forcedExtension);
+                }
+                if (askowrite) {
+                    if(f.exists()) {
+                        int actionDialog = JOptionPane.showConfirmDialog(parent,"Replace "+f.getName()+"?");
+                        if (actionDialog == JOptionPane.NO_OPTION)return null;
+                    }
                 }
             }
             return f;
@@ -392,9 +469,10 @@ public final class FileUtils {
      * @param startDir the start dir
      * @param filter the FileNameExtensionFilter array
      * @param defaultFilterIndex
+     * @param title null for default
      * @return the opened file
      */
-    public static File[] fchooserMultiple(Component parent, File startDir, FileNameExtensionFilter[] filter, int defaultFilterIndex) {
+    public static File[] fchooserMultiple(Component parent, File startDir, FileNameExtensionFilter[] filter, int defaultFilterIndex, String title) {
         // Creem un filechooser per seleccionar el fitxer obert
         JFileChooser fileChooser = new JFileChooser();
         if(startDir==null){
@@ -406,6 +484,9 @@ public final class FileUtils {
                 fileChooser.addChoosableFileFilter(filter[i]);
             }
             fileChooser.setFileFilter(filter[defaultFilterIndex]);
+        }
+        if (title!=null) {
+            fileChooser.setDialogTitle(title);
         }
         int selection;
         fileChooser.setMultiSelectionEnabled(true);
@@ -419,7 +500,6 @@ public final class FileUtils {
         }
     }
     
-    
     /**
      * Fchooser. Obra un File Chooser al directori especificat amb els filtres
      * especificats i retorna el fitxer seleccionat o null. Igual que anterior
@@ -430,30 +510,20 @@ public final class FileUtils {
      * @param filter the FileNameExtensionFilter array
      * @return the opened file
      */
-    public static File fchooser(Component parent, File startDir, FileNameExtensionFilter[] filter, boolean save) {
-        return fchooser(parent, startDir, filter, 0, save, true);
+    public static File fchooserSaveNoAsk(Component parent, File startDir, FileNameExtensionFilter[] filter, String forceExt) {
+        return fchooser(parent, startDir, filter, 0, true, false, forceExt,null);
     }
     
-    /**
-     * Fchooser. Obra un File Chooser al directori especificat amb els filtres
-     * especificats i retorna el fitxer seleccionat o null. Igual que anterior
-     * per� aquest no demana si sobreescriure el fitxer (interpreta que es far�
-     * posteriorment, �til per si es vol fer append).
-     *
-     * @param startDir the start dir
-     * @param filter the FileNameExtensionFilter array
-     * @return the opened file
-     */
-    public static File fchooserSaveNoAsk(Component parent, File startDir, FileNameExtensionFilter[] filter) {
-        return fchooser(parent, startDir, filter, 0, true, false);
+    public static File fchooserSaveAsk(Component parent, File startDir, FileNameExtensionFilter[] filter, String forceExt) {
+        return fchooser(parent, startDir, filter, 0, true, true, forceExt,null);
     }
     
-    public static File fchooserSaveAsk(Component parent, File startDir, FileNameExtensionFilter[] filter) {
-        return fchooser(parent, startDir, filter, 0, true, true);
+    public static File fchooserSaveAsk(Component parent, File startDir, FileNameExtensionFilter[] filter, String forceExt, String title) {
+        return fchooser(parent, startDir, filter, 0, true, true, forceExt,title);
     }
     
     public static File fchooserOpen(Component parent, File startDir, FileNameExtensionFilter[] filter, int defaultFilterIndex) {
-        return fchooser(parent, startDir, filter, defaultFilterIndex, false, false);
+        return fchooser(parent, startDir, filter, defaultFilterIndex, false, false, null,null);
     }
     
     public static File fchooserOpenDir(Component parent, File startDir, String title) {
@@ -485,6 +555,13 @@ public final class FileUtils {
         return false;
     }
     
+    public static boolean YesNoDialog(Component parent, String question, String title){
+        int actionDialog = JOptionPane.showConfirmDialog(parent,
+                question,title,JOptionPane.YES_NO_OPTION);
+        if (actionDialog == JOptionPane.YES_OPTION)return true;
+        return false;
+    }
+    
     public static int YesNoCancelDialog(Component parent, String question){
         int actionDialog = JOptionPane.showConfirmDialog(parent,
                 question);
@@ -498,6 +575,60 @@ public final class FileUtils {
         JOptionPane.showMessageDialog(parent, message, title, JOptionPane.INFORMATION_MESSAGE);
     }
     
+    public static Double DialogAskForDouble(Component parent, String label, String title, String defaultValue) {
+    	String s = (String)JOptionPane.showInputDialog(
+    			parent,
+    			label,
+    			title,
+    			JOptionPane.PLAIN_MESSAGE,
+    			null,
+    			null,
+    			defaultValue);
+    	Double dval = null;;
+    	if ((s != null) && (s.length() > 0)) {
+    		try{
+    			dval = Double.parseDouble(s);
+    		}catch(Exception ex){
+    			return null;
+    		}
+    	}
+    	return dval;
+    }
+    
+    public static String DialogAskForString(Component parent, String label, String title, String defaultValue) {
+        String s = (String)JOptionPane.showInputDialog(
+                parent,
+                label,
+                title,
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                null,
+                defaultValue);
+        if ((s != null) && (s.length() > 0)) {
+            return s;
+        }
+        return null;
+    }
+    
+    public static double DialogAskForPositiveDouble(Component parent, String label, String title, String defaultValue) {
+    	String s = (String)JOptionPane.showInputDialog(
+    			parent,
+    			label,
+    			title,
+    			JOptionPane.PLAIN_MESSAGE,
+    			null,
+    			null,
+    			defaultValue);
+    	double dval = -1;
+    	if ((s != null) && (s.length() > 0)) {
+    		try{
+    			dval = Double.parseDouble(s);
+    		}catch(Exception ex){
+    			return -1;
+    		}
+    	}
+    	return dval;
+    }
     
     /**
      * Gets the extension of a file.
@@ -561,15 +692,6 @@ public final class FileUtils {
         } else {
             return fn;
         }
-    }
-
-    /**
-     * Gets the os.
-     *
-     * @return the os
-     */
-    public static String getOS() {
-        return FileUtils.os;
     }
 
     /**
@@ -646,9 +768,9 @@ public final class FileUtils {
     }
 
     /**
-     * Sets the locale.
+     * Sets the locale. -- ROOT by default
      */
-    public static void setLocale() {
+    public static void setLocale(Locale loc) {
         // To TEST:
         // System.out.println(mySymbols.getDecimalSeparator());
         // mySymbols.setDecimalSeparator('.');
@@ -657,21 +779,28 @@ public final class FileUtils {
         // System.out.println(dfX_3.format(12345678.009921));
         // dfX_3.setDecimalFormatSymbols(mySymbols);
         // System.out.println(dfX_3.format(12345678.009921));
-//        System.out.println(currentlocale.getCountry());
-//        System.out.println(currentlocale.getLanguage());
-        Locale.setDefault(currentlocale);
+        
+    	if (loc==null)loc=Locale.ROOT;
+    	
+        Locale.setDefault(loc);
 
+        FileUtils.mySymbols = new DecimalFormatSymbols(loc);
         FileUtils.mySymbols.setDecimalSeparator('.');
         FileUtils.dfX_1.setDecimalFormatSymbols(FileUtils.mySymbols);
         FileUtils.dfX_2.setDecimalFormatSymbols(FileUtils.mySymbols);
         FileUtils.dfX_3.setDecimalFormatSymbols(FileUtils.mySymbols);
         FileUtils.dfX_4.setDecimalFormatSymbols(FileUtils.mySymbols);
         FileUtils.dfX_5.setDecimalFormatSymbols(FileUtils.mySymbols);
+        FileUtils.dfX_6.setDecimalFormatSymbols(FileUtils.mySymbols);
         FileUtils.dfX_1.setGroupingUsed(false);
         FileUtils.dfX_2.setGroupingUsed(false);
         FileUtils.dfX_3.setGroupingUsed(false);
         FileUtils.dfX_4.setGroupingUsed(false);
         FileUtils.dfX_5.setGroupingUsed(false);
+        FileUtils.dfX_6.setGroupingUsed(false);
+
+        System.out.println(Locale.getDefault().getLanguage()+"-"+Locale.getDefault().getCountry());
+        
     }
 
     /**
@@ -679,7 +808,7 @@ public final class FileUtils {
      *
      * @param op the new os
      */
-    public static void setOS(String op) {
+    private static void setOS(String op) {
         FileUtils.os = op;
     }
 
@@ -860,5 +989,120 @@ public final class FileUtils {
         BigDecimal bd = new BigDecimal(Double.toString(d));
         bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_UP);
         return bd.doubleValue();
+    }
+    
+    
+    public static void openURL(String url) {
+
+    	try {
+    		if(Desktop.isDesktopSupported()){
+    			Desktop desktop = Desktop.getDesktop();
+    			desktop.browse(new URI(url));
+    		}else {
+    			String cOS = getOS();
+    			if (cOS.equalsIgnoreCase("lin")) {
+    				Runtime runtime = Runtime.getRuntime();
+    				runtime.exec("xdg-open " + url);
+    			}
+    			if (cOS.equalsIgnoreCase("win")) {
+    				Runtime rt = Runtime.getRuntime();
+    				rt.exec("rundll32 url.dll,FileProtocolHandler " + url);
+    			}
+    			if (cOS.equalsIgnoreCase("mac")) {
+    				Runtime rt = Runtime.getRuntime();
+    				rt.exec("open " + url);
+    			}
+    		}
+    	}catch(Exception e) {
+    		System.out.println("Error opening url");
+    	}
+    }
+
+    public static String getCharLine(char c, int lineWidth){
+    	StringBuilder sb = new StringBuilder(lineWidth);
+    	for(int i=0; i<lineWidth;i++){
+    		sb.append(c);	
+    	}
+    	return sb.toString();
+    }
+    
+    public static String getCenteredString(String toCenter, int lineWidth) {
+        if (toCenter.length()>=lineWidth)return toCenter;
+        int len = toCenter.length();
+        int spacesToAdd = (int) ((lineWidth-len)/2.f);
+        return getCharLine(' ',spacesToAdd).concat(toCenter);
+    }
+    
+    public static Color parseColorName(String name){
+        if (FileUtils.containsIgnoreCase(name, "black")) return Color.black;
+        if (FileUtils.containsIgnoreCase(name, "green")) return Color.green;
+        if (FileUtils.containsIgnoreCase(name, "red")) return Color.red;
+        if (FileUtils.containsIgnoreCase(name, "cyan")) return Color.cyan;
+        if (FileUtils.containsIgnoreCase(name, "yellow")) return Color.yellow;
+        if (FileUtils.containsIgnoreCase(name, "magenta")) return Color.magenta;
+        if (FileUtils.containsIgnoreCase(name, "orange")) return Color.orange;
+        if (FileUtils.containsIgnoreCase(name, "pink")) return Color.pink;
+        if (FileUtils.containsIgnoreCase(name, "blue")) return Color.blue;
+        if (FileUtils.containsIgnoreCase(name, "white")) return Color.white;
+        try {
+            return Color.decode(name);
+        }catch(Exception ex) {
+            //do nothing
+        }
+        return null;
+    }
+    
+    public static String getColorName(Color c){
+        if (c==Color.black) return "black";
+        if (c==Color.green) return "green";
+        if (c==Color.red) return "red";
+        if (c==Color.cyan) return "cyan";
+        if (c==Color.yellow) return "yellow";
+        if (c==Color.magenta) return "magenta";
+        if (c==Color.orange) return "orange";
+        if (c==Color.pink) return "pink";
+        if (c==Color.blue) return "blue";
+        if (c==Color.white) return "white";
+        return Integer.toString(c.getRGB());
+    }
+    
+    public static Color getColor(int rgb) {
+    	return new Color(rgb);
+    }
+    public static Color getComplementary(Color c) {
+    	float[] hsbvals = new float[3];
+    	hsbvals = Color.RGBtoHSB(c.getRed(), c.getGreen(), c.getBlue(), hsbvals);
+    	float newhue = hsbvals[0] + 0.5f;
+    	if (newhue>1) {
+    		newhue = 1-(newhue%1);	
+    	}
+    	return new Color(Color.HSBtoRGB(newhue, hsbvals[1], hsbvals[2]));
+    }
+    
+    
+    //INCLUSIVE, per aixo el +1
+    public static float[] arange(float ini, float fin, float step) {
+        int size = FastMath.round((fin-ini)/step)+1;
+        float[] ret = new float[size];
+        for (int i=0; i<ret.length; i++) {
+            ret[i] = ini + i*step; 
+        }
+        if (ret.length==0) ret=new float[] {ini};
+        return ret;
+    }
+    
+    //INCLUSIVE
+    public static int[] range(int ini, int fin, int step) {
+        int size = (fin-ini)/step+1;
+        int[] ret = new int[size];
+        for (int i=0; i<ret.length; i++) {
+            ret[i] = ini + i*step; 
+        }
+        if (ret.length==0) ret=new int[] {ini};
+        return ret;
+    }
+
+    public static float[] arange(double aMin, double aMax, double aStep) {
+        return arange((float)aMin, (float)aMax, (float)aStep);
     }
 }

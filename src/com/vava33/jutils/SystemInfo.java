@@ -28,7 +28,10 @@ public class SystemInfo {
     public String OSversion() {
         return System.getProperty("os.version");
     }
-
+    public String JAVA32_64() {
+        return System.getProperty("sun.arch.data.model");    
+    }
+    
     public String OsArch() {
         return System.getProperty("os.arch");
     }
@@ -76,5 +79,11 @@ public class SystemInfo {
             sb.append("\n");
         }
         return sb.toString();
+    }
+    
+    public static void main(final String[] args) {
+        SystemInfo si = new SystemInfo();
+        System.out.println(si.Info());
+        System.out.println(si.JAVA32_64());
     }
 }

@@ -69,6 +69,15 @@ public final class ConsoleWritter {
         sb.append(BL);
         System.out.print(sb.toString());
     }
+    
+    //formatted
+    public static void statf(String fmt, Object... args) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(fHora.format(new Date()));
+        sb.append(String.format(fmt, args));
+        sb.append(BL);
+        System.out.print(sb.toString());
+    }
 
     
     // it will write a line containing name=value, name2=value2, ...
