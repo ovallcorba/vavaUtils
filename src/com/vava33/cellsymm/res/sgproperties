@@ -1,4 +1,13 @@
-D1Dplot SGproperties
+== D1Dplot SGproperties ==
+#--------------------------------------------------------------------------------
+# Monoclinic Settings:
+# 1=abc;2=c-ba; (unique b)
+# 3=abc;4=ba-c; (unique c)
+# 5=abc;6=-acb; (unique a)
+# +cell choices 1, 2 ,3
+#--------------------------------------------------------------------------------
+# Orthorhombic Settings:
+# 1=abc;2=ba-c;3=cab;4=-cba;5=bca;6=a-cb
 --------------------------------------------------------------------------------
 SGNum=1
 SGNames=P 1;P1
@@ -16,433 +25,2756 @@ SGNum=3
 SGNames=P 1 2 1;P121;P 2;P2
 Latt=P
 Centro=false
+Setting=1 2
 SYMM=X,Y,Z;-X,Y,-Z
+--------------------------------------------------------------------------------
+SGNum=3
+SGNames=P 1 1 2;P112
+Latt=P
+Centro=false
+Setting=3 4
+SYMM=X,Y,Z;-X,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=3
+SGNames=P 2 1 1;P211
+Latt=P
+Centro=false
+Setting=5 6
+SYMM=X,Y,Z;X,-Y,-Z
 --------------------------------------------------------------------------------
 SGNum=4
 SGNames=P 1 21 1;P1211;P 21;P21
 Latt=P
 Centro=false
+Setting=1 2
 SYMM=X,Y,Z;-X,Y+1/2,-Z
+--------------------------------------------------------------------------------
+SGNum=4
+SGNames=P 1 1 21;P1121
+Latt=P
+Centro=false
+Setting=3 4
+SYMM=X,Y,Z;-X,-Y,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=4
+SGNames=P 21 1 1;P2111
+Latt=P
+Centro=false
+Setting=5 6
+SYMM=X,Y,Z;X+1/2,-Y,-Z
 --------------------------------------------------------------------------------
 SGNum=5
 SGNames=C 1 2 1;C121;C 2;C2
 Latt=C
 Centro=false
+Setting=1
+CellChoice=1
 SYMM=X,Y,Z;-X,Y,-Z
+--------------------------------------------------------------------------------
+SGNum=5
+SGNames=A 1 2 1;A121
+Latt=A
+Centro=false
+Setting=2
+CellChoice=1
+SYMM=X,Y,Z;-X,Y,-Z 
+--------------------------------------------------------------------------------
+SGNum=5
+SGNames=A 1 1 2;A112
+Latt=A
+Centro=false
+Setting=3
+CellChoice=1
+SYMM=X,Y,Z;-X,-Y,Z 
+--------------------------------------------------------------------------------
+SGNum=5
+SGNames=B 1 1 2;B112
+Latt=B
+Centro=false
+Setting=4
+CellChoice=1
+SYMM=X,Y,Z;-X,-Y,Z 
+--------------------------------------------------------------------------------
+SGNum=5
+SGNames=B 2 1 1;B211
+Latt=B
+Centro=false
+Setting=5
+CellChoice=1
+SYMM=X,Y,Z;X,-Y,-Z 
+--------------------------------------------------------------------------------
+SGNum=5
+SGNames=C 2 1 1;C211
+Latt=C
+Centro=false
+Setting=6
+CellChoice=1
+SYMM=X,Y,Z;X,-Y,-Z 
+--------------------------------------------------------------------------------
+SGNum=5
+SGNames=A 1 2 1;A121;A 2;A2
+Latt=A
+Centro=false
+Setting=1
+CellChoice=2
+SYMM=X,Y,Z;-X,Y,-Z 
+--------------------------------------------------------------------------------
+SGNum=5
+SGNames=C 1 2 1;C121
+Latt=C
+Centro=false
+Setting=2
+CellChoice=2
+SYMM=X,Y,Z;-X,Y,-Z 
+--------------------------------------------------------------------------------
+SGNum=5
+SGNames=B 1 1 2;B112
+Latt=B
+Centro=false
+Setting=3
+CellChoice=2
+SYMM=X,Y,Z;-X,-Y,Z 
+--------------------------------------------------------------------------------
+SGNum=5
+SGNames=A 1 1 2;A112
+Latt=A
+Centro=false
+Setting=4
+CellChoice=2
+SYMM=X,Y,Z;-X,-Y,Z 
+--------------------------------------------------------------------------------
+SGNum=5
+SGNames=C 2 1 1;C211
+Latt=C
+Centro=false
+Setting=5
+CellChoice=2
+SYMM=X,Y,Z;X,-Y,-Z 
+--------------------------------------------------------------------------------
+SGNum=5
+SGNames=B 2 1 1;B211
+Latt=B
+Centro=false
+Setting=6
+CellChoice=2
+SYMM=X,Y,Z;X,-Y,-Z 
+--------------------------------------------------------------------------------
+SGNum=5
+SGNames=I 1 2 1;I121;I 2;I2
+Latt=I
+Centro=false
+Setting=1 2
+CellChoice=3
+SYMM=X,Y,Z;-X,Y,-Z 
+--------------------------------------------------------------------------------
+SGNum=5
+SGNames=I 1 1 2; I112
+Latt=I
+Centro=false
+Setting=3 4
+CellChoice=3
+SYMM=X,Y,Z;-X,-Y,Z 
+--------------------------------------------------------------------------------
+SGNum=5
+SGNames=I 2 1 1; I211
+Latt=I
+Centro=false
+Setting=5 6
+CellChoice=3
+SYMM=X,Y,Z;X,-Y,-Z 
 --------------------------------------------------------------------------------
 SGNum=6
 SGNames=P 1 m 1;P1m1;P m;Pm
 Latt=P
 Centro=false
+Setting=1 2
 SYMM=X,Y,Z;X,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=6
+SGNames=P 1 1 m;P11m
+Latt=P
+Centro=false
+Setting=3 4
+SYMM=X,Y,Z;X,Y,-Z
+--------------------------------------------------------------------------------
+SGNum=6
+SGNames=P m 1 1;Pm11
+Latt=P
+Centro=false
+Setting=5 6
+SYMM=X,Y,Z;-X,Y,Z
 --------------------------------------------------------------------------------
 SGNum=7
 SGNames=P 1 c 1;P1c1;P c;Pc
 Latt=P
 Centro=false
+Setting=1
+CellChoice=1
 SYMM=X,Y,Z;X,-Y,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=7
+SGNames=P 1 a 1;P1a1
+Latt=P
+Centro=false
+Setting=2
+CellChoice=1
+SYMM=X,Y,Z;X+1/2,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=7
+SGNames=P 1 1 a;P11a
+Latt=P
+Centro=false
+Setting=3
+CellChoice=1
+SYMM=X,Y,Z;X+1/2,Y,-Z
+--------------------------------------------------------------------------------
+SGNum=7
+SGNames=P 1 1 b;P11b
+Latt=P
+Centro=false
+Setting=4
+CellChoice=1
+SYMM=X,Y,Z;X,Y+1/2,-Z 
+--------------------------------------------------------------------------------
+SGNum=7
+SGNames=P b 1 1;Pb11
+Latt=P
+Centro=false
+Setting=5
+CellChoice=1
+SYMM=X,Y,Z;-X,Y+1/2,Z
+--------------------------------------------------------------------------------
+SGNum=7
+SGNames=P c 1 1;Pc11
+Latt=P
+Centro=false
+Setting=6
+CellChoice=1
+SYMM=X,Y,Z;-X,Y,Z+1/2 
+--------------------------------------------------------------------------------
+SGNum=7
+SGNames=P 1 n 1;P1n1;P n;Pn
+Latt=P
+Centro=false
+Setting=1 2
+CellChoice=2
+SYMM=X,Y,Z;X+1/2,-Y,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=7
+SGNames=P 1 1 n;P11n
+Latt=P
+Centro=false
+Setting=3 4
+CellChoice=2
+SYMM=X,Y,Z;X+1/2,Y+1/2,-Z
+--------------------------------------------------------------------------------
+SGNum=7
+SGNames=P n 1 1;Pn11
+Latt=P
+Centro=false
+Setting=5 6
+CellChoice=2
+SYMM=X,Y,Z;-X,Y+1/2,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=7
+SGNames=P 1 a 1;P1a1;P a;Pa
+Latt=P
+Centro=false
+Setting=1
+CellChoice=3
+SYMM=X,Y,Z;X+1/2,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=7
+SGNames=P 1 c 1;P1c1
+Latt=P
+Centro=false
+Setting=2
+CellChoice=3
+SYMM=X,Y,Z;X,-Y,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=7
+SGNames=P 1 1 b;P11b
+Latt=P
+Centro=false
+Setting=3
+CellChoice=3
+SYMM=X,Y,Z;X,Y+1/2,-Z
+--------------------------------------------------------------------------------
+SGNum=7
+SGNames=P 1 1 a;P11a
+Latt=P
+Centro=false
+Setting=4
+CellChoice=3
+SYMM=X,Y,Z;X+1/2,Y,-Z 
+--------------------------------------------------------------------------------
+SGNum=7
+SGNames=P c 1 1;Pc11
+Latt=P
+Centro=false
+Setting=5
+CellChoice=3
+SYMM=X,Y,Z;-X,Y,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=7
+SGNames=P b 1 1;Pb11
+Latt=P
+Centro=false
+Setting=6
+CellChoice=3
+SYMM=X,Y,Z;-X,Y+1/2,Z 
 --------------------------------------------------------------------------------
 SGNum=8
 SGNames=C 1 m 1;C1m1;C m;Cm
 Latt=C
 Centro=false
+Setting=1
+CellChoice=1
 SYMM=X,Y,Z;X,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=8
+SGNames=A 1 m 1;A1m1;
+Latt=A
+Centro=false
+Setting=2
+CellChoice=1
+SYMM=X,Y,Z;X,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=8
+SGNames=A 1 1 m;A11m;
+Latt=A
+Centro=false
+Setting=3
+CellChoice=1
+SYMM=X,Y,Z;X,Y,-Z
+--------------------------------------------------------------------------------
+SGNum=8
+SGNames=B 1 1 m;B11m;
+Latt=B
+Centro=false
+Setting=4
+CellChoice=1
+SYMM=X,Y,Z;X,Y,-Z
+--------------------------------------------------------------------------------
+SGNum=8
+SGNames=B m 1 1;Bm11;
+Latt=B
+Centro=false
+Setting=5
+CellChoice=1
+SYMM=X,Y,Z;-X,Y,Z 
+--------------------------------------------------------------------------------
+SGNum=8
+SGNames=C m 1 1;Cm11;
+Latt=C
+Centro=false
+Setting=6
+CellChoice=1
+SYMM=X,Y,Z;-X,Y,Z 
+--------------------------------------------------------------------------------
+SGNum=8
+SGNames=A 1 m 1;A1m1;A m;Am
+Latt=A
+Centro=false
+Setting=1
+CellChoice=2
+SYMM=X,Y,Z;X,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=8
+SGNames=C 1 m 1;C1m1
+Latt=C
+Centro=false
+Setting=2
+CellChoice=2
+SYMM=X,Y,Z;X,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=8
+SGNames=B 1 1 m;B11m;
+Latt=B
+Centro=false
+Setting=3
+CellChoice=2
+SYMM=X,Y,Z;X,Y,-Z
+--------------------------------------------------------------------------------
+SGNum=8
+SGNames=A 1 1 m;A11m;
+Latt=A
+Centro=false
+Setting=4
+CellChoice=2
+SYMM=X,Y,Z;X,Y,-Z
+--------------------------------------------------------------------------------
+SGNum=8
+SGNames=C m 1 1;Cm11;
+Latt=C
+Centro=false
+Setting=5
+CellChoice=2
+SYMM=X,Y,Z;-X,Y,Z 
+--------------------------------------------------------------------------------
+SGNum=8
+SGNames=B m 1 1;Bm11;
+Latt=B
+Centro=false
+Setting=6
+CellChoice=2
+SYMM=X,Y,Z;-X,Y,Z 
+--------------------------------------------------------------------------------
+SGNum=8
+SGNames=I 1 m 1;I1m1;I m;Im
+Latt=I
+Centro=false
+Setting=1 2
+CellChoice=3
+SYMM=X,Y,Z;X,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=8
+SGNames=I 1 1 m;I11m
+Latt=I
+Centro=false
+Setting=3 4
+CellChoice=3
+SYMM=X,Y,Z;X,Y,-Z
+--------------------------------------------------------------------------------
+SGNum=8
+SGNames=I m 1 1;Im11;
+Latt=I
+Centro=false
+Setting=5 6
+CellChoice=3
+SYMM=X,Y,Z;-X,Y,Z 
 --------------------------------------------------------------------------------
 SGNum=9
 SGNames=C 1 c 1;C1c1;C c;Cc
 Latt=C
 Centro=false
+Setting=1
+CellChoice=1
 SYMM=X,Y,Z;X,-Y,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=9
+SGNames=A 1 a 1;A1a1;A a;Aa
+Latt=A
+Centro=false
+Setting=2
+CellChoice=1
+SYMM=X,Y,Z;X+1/2,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=9
+SGNames=A 1 1 a;A11a
+Latt=A
+Centro=false
+Setting=3
+CellChoice=1
+SYMM=X,Y,Z;X+1/2,Y,-Z
+--------------------------------------------------------------------------------
+SGNum=9
+SGNames=B 1 1 b;B11b
+Latt=B
+Centro=false
+Setting=4
+CellChoice=1
+SYMM=X,Y,Z;X,Y+1/2,-Z
+--------------------------------------------------------------------------------
+SGNum=9
+SGNames=B b 1 1;Bb11
+Latt=B
+Centro=false
+Setting=5
+CellChoice=1
+SYMM=X,Y,Z;-X,Y+1/2,Z 
+--------------------------------------------------------------------------------
+SGNum=9
+SGNames=C c 1 1;Cc11
+Latt=C
+Centro=false
+Setting=6
+CellChoice=1
+SYMM=X,Y,Z;-X,Y,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=9
+SGNames=A 1 n 1;A1n1;A n;An
+Latt=A
+Centro=false
+Setting=1
+CellChoice=2
+SYMM=X,Y,Z;X+1/2,-Y,Z+1/2 
+--------------------------------------------------------------------------------
+SGNum=9
+SGNames=C 1 n 1;C1n1;C n;Cn
+Latt=C
+Centro=false
+Setting=2
+CellChoice=2
+SYMM=X,Y,Z;X+1/2,-Y,Z+1/2 
+--------------------------------------------------------------------------------
+SGNum=9
+SGNames=B 1 1 n;B11n
+Latt=B
+Centro=false
+Setting=3
+CellChoice=2
+SYMM=X,Y,Z;X+1/2,Y+1/2,-Z 
+--------------------------------------------------------------------------------
+SGNum=9
+SGNames=A 1 1 n;A11n
+Latt=A
+Centro=false
+Setting=4
+CellChoice=2
+SYMM=X,Y,Z;X+1/2,Y+1/2,-Z 
+--------------------------------------------------------------------------------
+SGNum=9
+SGNames=C n 1 1;Cn11
+Latt=C
+Centro=false
+Setting=5
+CellChoice=2
+SYMM=X,Y,Z;-X,Y+1/2,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=9
+SGNames=B n 1 1;Bn11
+Latt=B
+Centro=false
+Setting=6
+CellChoice=2
+SYMM=X,Y,Z;-X,Y+1/2,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=9
+SGNames=I 1 a 1;I1a1;I a;Ia
+Latt=I
+Centro=false
+Setting=1
+CellChoice=3
+SYMM=X,Y,Z;X+1/2,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=9
+SGNames=I 1 c 1;I1c1;I c;Ic
+Latt=I
+Centro=false
+Setting=2
+CellChoice=3
+SYMM=X,Y,Z;X,-Y,Z+1/2 
+--------------------------------------------------------------------------------
+SGNum=9
+SGNames=I 1 1 b;I11b
+Latt=A
+Centro=false
+Setting=3
+CellChoice=3
+SYMM=X,Y,Z;X,Y+1/2,-Z
+--------------------------------------------------------------------------------
+SGNum=9
+SGNames=I 1 1 a;I11a
+Latt=I
+Centro=false
+Setting=4
+CellChoice=3
+SYMM=X,Y,Z;X+1/2,Y,-Z
+--------------------------------------------------------------------------------
+SGNum=9
+SGNames=I c 1 1;Ic11
+Latt=I
+Centro=false
+Setting=5
+CellChoice=3
+SYMM=X,Y,Z;-X,Y,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=9
+SGNames=I b 1 1;Ib11
+Latt=I
+Centro=false
+Setting=6
+CellChoice=3
+SYMM=X,Y,Z;-X,Y+1/2,Z 
 --------------------------------------------------------------------------------
 SGNum=10
 SGNames=P 1 2/m 1;P12/m1;P 2/m;P2/m
 Latt=P
 Centro=true
+Setting=1 2
 SYMM=X,Y,Z;-X,Y,-Z
+--------------------------------------------------------------------------------
+SGNum=10
+SGNames=P 1 1 2/m;P112/m
+Latt=P
+Centro=true
+Setting=3 4
+SYMM=X,Y,Z;-X,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=10
+SGNames=P 2/m 1 1;P2/m11
+Latt=P
+Centro=true
+Setting=5 6
+SYMM=X,Y,Z;X,-Y,-Z
 --------------------------------------------------------------------------------
 SGNum=11
 SGNames=P 1 21/m 1;P121/m1;P 21/m;P21/m
 Latt=P
 Centro=true
+Setting=1 2
 SYMM=X,Y,Z;-X,Y+1/2,-Z
+--------------------------------------------------------------------------------
+SGNum=11
+SGNames=P 1 1 21/m;P1121/m
+Latt=P
+Centro=true
+Setting=3 4
+SYMM=X,Y,Z;-X,-Y,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=11
+SGNames=P 21/m 1 1;P21/m11
+Latt=P
+Centro=true
+Setting=5 6
+SYMM=X,Y,Z;X+1/2,-Y,-Z 
 --------------------------------------------------------------------------------
 SGNum=12
 SGNames=C 1 2/m 1;C12/m1;C 2/m;C2/m
 Latt=C
 Centro=true
+Setting=1
+CellChoice=1
 SYMM=X,Y,Z;-X,Y,-Z
+--------------------------------------------------------------------------------
+SGNum=12
+SGNames=A 1 2/m 1;A12/m1;A 2/m;A2/m
+Latt=A
+Centro=true
+Setting=2
+CellChoice=1
+SYMM=X,Y,Z;-X,Y,-Z
+--------------------------------------------------------------------------------
+SGNum=12
+SGNames=A 1 1 2/m;A112/m
+Latt=A
+Centro=true
+Setting=3
+CellChoice=1
+SYMM=X,Y,Z;-X,-Y,Z 
+--------------------------------------------------------------------------------
+SGNum=12
+SGNames=B 1 1 2/m;B112/m
+Latt=B
+Centro=true
+Setting=4
+CellChoice=1
+SYMM=X,Y,Z;-X,-Y,Z 
+--------------------------------------------------------------------------------
+SGNum=12
+SGNames=B 2/m 1 1;B2/m11
+Latt=B
+Centro=true
+Setting=5
+CellChoice=1
+SYMM=X,Y,Z; X,-Y,-Z
+--------------------------------------------------------------------------------
+SGNum=12
+SGNames=C 2/m 1 1;C2/m11
+Latt=C
+Centro=true
+Setting=6
+CellChoice=1
+SYMM=X,Y,Z; X,-Y,-Z
+--------------------------------------------------------------------------------
+SGNum=12
+SGNames=A 1 2/m 1;A12/m1;A 2/m;A2/m
+Latt=A
+Centro=true
+Setting=1
+CellChoice=2
+SYMM=X,Y,Z;-X,Y,-Z
+--------------------------------------------------------------------------------
+SGNum=12
+SGNames=C 1 2/m 1;C12/m1;C 2/m;C2/m
+Latt=C
+Centro=true
+Setting=2
+CellChoice=2
+SYMM=X,Y,Z;-X,Y,-Z
+--------------------------------------------------------------------------------
+SGNum=12
+SGNames=B 1 1 2/m;B112/m
+Latt=B
+Centro=true
+Setting=3
+CellChoice=2
+SYMM=X,Y,Z;-X,-Y,Z 
+--------------------------------------------------------------------------------
+SGNum=12
+SGNames=A 1 1 2/m;A112/m
+Latt=A
+Centro=true
+Setting=4
+CellChoice=2
+SYMM=X,Y,Z;-X,-Y,Z 
+--------------------------------------------------------------------------------
+SGNum=12
+SGNames=C 2/m 1 1;C2/m11
+Latt=C
+Centro=true
+Setting=5
+CellChoice=2
+SYMM=X,Y,Z; X,-Y,-Z
+--------------------------------------------------------------------------------
+SGNum=12
+SGNames=B 2/m 1 1;B2/m11
+Latt=B
+Centro=true
+Setting=5
+CellChoice=2
+SYMM=X,Y,Z; X,-Y,-Z
+--------------------------------------------------------------------------------
+SGNum=12
+SGNames=I 1 2/m 1;I12/m1;I 2/m;I2/m
+Latt=I
+Centro=true
+Setting=1 2
+CellChoice=3
+SYMM=X,Y,Z;-X,Y,-Z
+--------------------------------------------------------------------------------
+SGNum=12
+SGNames=I 1 1 2/m;I112/m
+Latt=I
+Centro=true
+Setting=3 4
+CellChoice=3
+SYMM=X,Y,Z;-X,-Y,Z 
+--------------------------------------------------------------------------------
+SGNum=12
+SGNames=I 2/m 1 1;I2/m11
+Latt=I
+Centro=true
+Setting=5 6
+CellChoice=3
+SYMM=X,Y,Z; X,-Y,-Z
 --------------------------------------------------------------------------------
 SGNum=13
 SGNames=P 1 2/c 1;P12/c1;P 2/c;P2/c
 Latt=P
 Centro=true
+Setting=1
+CellChoice=1
 SYMM=X,Y,Z;-X,Y,-Z+1/2
+--------------------------------------------------------------------------------
+SGNum=13
+SGNames=P 1 2/a 1;P12/a1;P 2/a;P2/a
+Latt=P
+Centro=true
+Setting=2
+CellChoice=1
+SYMM=X,Y,Z;-X+1/2,Y,-Z
+--------------------------------------------------------------------------------
+SGNum=13
+SGNames=P 1 1 2/a;P112/a
+Latt=P
+Centro=true
+Setting=3
+CellChoice=1
+SYMM=X,Y,Z;-X+1/2,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=13
+SGNames=P 1 1 2/b;P112/b
+Latt=P
+Centro=true
+Setting=4
+CellChoice=1
+SYMM=X,Y,Z;-X,-Y+1/2,Z
+--------------------------------------------------------------------------------
+SGNum=13
+SGNames=P 2/b 1 1;P2/b11
+Latt=P
+Centro=true
+Setting=5
+CellChoice=1
+SYMM=X,Y,Z;X,-Y+1/2,-Z
+--------------------------------------------------------------------------------
+SGNum=13
+SGNames=P 2/c 1 1;P2/c11
+Latt=P
+Centro=true
+Setting=6
+CellChoice=1
+SYMM=X,Y,Z;X,-Y,-Z+1/2
+--------------------------------------------------------------------------------
+SGNum=13
+SGNames=P 1 2/n 1;P12/n1;P 2/n;P2/n
+Latt=P
+Centro=true
+Setting=1 2
+CellChoice=2
+SYMM=X,Y,Z;-X+1/2,Y,-Z+1/2
+--------------------------------------------------------------------------------
+SGNum=13
+SGNames=P 1 1 2/n;P112/n
+Latt=P
+Centro=true
+Setting=3 4
+CellChoice=2
+SYMM=X,Y,Z;-X+1/2,-Y+1/2,Z
+--------------------------------------------------------------------------------
+SGNum=13
+SGNames=P 2/n 1 1;P2/n11
+Latt=P
+Centro=true
+Setting=5 6
+CellChoice=2
+SYMM=X,Y,Z;X,-Y+1/2,-Z+1/2
+--------------------------------------------------------------------------------
+SGNum=13
+SGNames=P 1 2/a 1;P12/a1;P 2/a;P2/a
+Latt=P
+Centro=true
+Setting=1
+CellChoice=3
+SYMM=X,Y,Z;-X+1/2,Y,-Z 
+--------------------------------------------------------------------------------
+SGNum=13
+SGNames=P 1 2/c 1;P12/c1;P 2/c;P2/c
+Latt=P
+Centro=true
+Setting=2
+CellChoice=3
+SYMM=X,Y,Z;-X,Y,-Z+1/2
+--------------------------------------------------------------------------------
+SGNum=13
+SGNames=P 1 1 2/b;P112/b
+Latt=P
+Centro=true
+Setting=3
+CellChoice=3
+SYMM=X,Y,Z;-X,-Y+1/2,Z
+--------------------------------------------------------------------------------
+SGNum=13
+SGNames=P 1 1 2/a;P112/a
+Latt=P
+Centro=true
+Setting=4
+CellChoice=3
+SYMM=X,Y,Z;-X+1/2,-Y,Z 
+--------------------------------------------------------------------------------
+SGNum=13
+SGNames=P 2/c 1 1;P2/c11
+Latt=P
+Centro=true
+Setting=5
+CellChoice=3
+SYMM=X,Y,Z;X,-Y,-Z+1/2 
+--------------------------------------------------------------------------------
+SGNum=13
+SGNames=P 2/b 1 1;P2/b11
+Latt=P
+Centro=true
+Setting=6
+CellChoice=3
+SYMM=X,Y,Z;X,-Y+1/2,-Z 
 --------------------------------------------------------------------------------
 SGNum=14
 SGNames=P 1 21/c 1;P121/c1;P 21/c;P21/c
 Latt=P
 Centro=true
+Setting=1
+CellChoice=1
 SYMM=X,Y,Z;-X,Y+1/2,-Z+1/2
+--------------------------------------------------------------------------------
+SGNum=14
+SGNames=P 1 21/a 1;P121/a1;P 21/a;P21/a
+Latt=P
+Centro=true
+Setting=2
+CellChoice=1
+SYMM=X,Y,Z;-X+1/2,Y+1/2,-Z
+--------------------------------------------------------------------------------
+SGNum=14
+SGNames=P 1 1 21/a;P1121/a
+Latt=P
+Centro=true
+Setting=3
+CellChoice=1
+SYMM=X,Y,Z;-X+1/2,-Y,Z+1/2 
+--------------------------------------------------------------------------------
+SGNum=14
+SGNames=P 1 1 21/b;P1121/b
+Latt=P
+Centro=true
+Setting=4
+CellChoice=1
+SYMM=X,Y,Z;-X,-Y+1/2,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=14
+SGNames=P 21/b 1 1;P21/b11
+Latt=P
+Centro=true
+Setting=5
+CellChoice=1
+SYMM=X,Y,Z;X+1/2,-Y+1/2,-Z 
+--------------------------------------------------------------------------------
+SGNum=14
+SGNames=P 21/c 1 1;P21/c11
+Latt=P
+Centro=true
+Setting=6
+CellChoice=1
+SYMM=X,Y,Z;X+1/2,-Y,-Z+1/2 
+--------------------------------------------------------------------------------
+SGNum=14
+SGNames=P 1 21/n 1;P121/n1;P 21/n;P21/n
+Latt=P
+Centro=true
+Setting=1 2
+CellChoice=2
+SYMM=X,Y,Z;-X+1/2,Y+1/2,-Z+1/2
+--------------------------------------------------------------------------------
+SGNum=14
+SGNames=P 1 1 21/n;P1121/n
+Latt=P
+Centro=true
+Setting=3 4
+CellChoice=2
+SYMM=X,Y,Z;-X+1/2,-Y+1/2,Z+1/2 
+--------------------------------------------------------------------------------
+SGNum=14
+SGNames=P 21/n 1 1;P21/n11
+Latt=P
+Centro=true
+Setting=5 6
+CellChoice=2
+SYMM=X,Y,Z;X+1/2,-Y+1/2,-Z+1/2
+--------------------------------------------------------------------------------
+SGNum=14
+SGNames=P 1 21/a 1;P121/a1;P 21/a;P21/a
+Latt=P
+Centro=true
+Setting=1
+CellChoice=3
+SYMM=X,Y,Z;-X+1/2,Y+1/2,-Z
+--------------------------------------------------------------------------------
+SGNum=14
+SGNames=P 1 21/c 1;P121/c1;P 21/c;P21/c
+Latt=P
+Centro=true
+Setting=2
+CellChoice=3
+SYMM=X,Y,Z;-X,Y+1/2,-Z+1/2
+--------------------------------------------------------------------------------
+SGNum=14
+SGNames=P 1 1 21/b;P1121/b
+Latt=P
+Centro=true
+Setting=3
+CellChoice=3
+SYMM=X,Y,Z;-X,-Y+1/2,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=14
+SGNames=P 1 1 21/a;P1121/a
+Latt=P
+Centro=true
+Setting=4
+CellChoice=3
+SYMM=X,Y,Z;-X+1/2,-Y,Z+1/2 
+--------------------------------------------------------------------------------
+SGNum=14
+SGNames=P 21/c 1 1;P21/c11
+Latt=P
+Centro=true
+Setting=5
+CellChoice=3
+SYMM=X,Y,Z;X+1/2,-Y,-Z+1/2 
+--------------------------------------------------------------------------------
+SGNum=14
+SGNames=P 21/b 1 1;P21/b11
+Latt=P
+Centro=true
+Setting=6
+CellChoice=3
+SYMM=X,Y,Z;X+1/2,-Y+1/2,-Z 
 --------------------------------------------------------------------------------
 SGNum=15
 SGNames=C 1 2/c 1;C12/c1;C 2/c;C2/c
 Latt=C
 Centro=true
+Setting=1
+CellChoice=1
 SYMM=X,Y,Z;-X,Y,-Z+1/2
+--------------------------------------------------------------------------------
+SGNum=15
+SGNames=A 1 2/a 1;A12/a1;A 2/a;A2/a
+Latt=A
+Centro=true
+Setting=2
+CellChoice=1
+SYMM=X,Y,Z;-X+1/2,Y,-Z
+--------------------------------------------------------------------------------
+SGNum=15
+SGNames=A 1 1 2/a;A112/a
+Latt=A
+Centro=true
+Setting=3
+CellChoice=1
+SYMM=X,Y,Z;-X+1/2,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=15
+SGNames=B 1 1 2/b;B112/b
+Latt=B
+Centro=true
+Setting=4
+CellChoice=1
+SYMM=X,Y,Z;-X,-Y+1/2,Z
+--------------------------------------------------------------------------------
+SGNum=15
+SGNames=B 2/b 1 1;B2/b11
+Latt=B
+Centro=true
+Setting=5
+CellChoice=1
+SYMM=X,Y,Z;X,-Y+1/2,-Z
+--------------------------------------------------------------------------------
+SGNum=15
+SGNames=C 2/c 1 1;C2/c11
+Latt=C
+Centro=true
+Setting=6
+CellChoice=1
+SYMM=X,Y,Z;X,-Y,-Z+1/2
+--------------------------------------------------------------------------------
+SGNum=15
+SGNames=A 1 2/n 1;A12/n1;A 2/n;A2/n
+Latt=A
+Centro=true
+Setting=1
+CellChoice=2
+SYMM=X,Y,Z;-X+1/2,Y,-Z+1/2
+--------------------------------------------------------------------------------
+SGNum=15
+SGNames=C 1 2/n 1;C12/n1;C 2/n;C2/n
+Latt=C
+Centro=true
+Setting=2
+CellChoice=2
+SYMM=X,Y,Z;-X+1/2,Y,-Z+1/2
+--------------------------------------------------------------------------------
+SGNum=15
+SGNames=B 1 1 2/n;B112/n
+Latt=B
+Centro=true
+Setting=3
+CellChoice=2
+SYMM=X,Y,Z;-X+1/2,-Y+1/2,Z
+--------------------------------------------------------------------------------
+SGNum=15
+SGNames=A 1 1 2/n;A112/n
+Latt=A
+Centro=true
+Setting=4
+CellChoice=2
+SYMM=X,Y,Z;-X+1/2,-Y+1/2,Z
+--------------------------------------------------------------------------------
+SGNum=15
+SGNames=C 2/n 1 1;C2/n11
+Latt=C
+Centro=true
+Setting=5
+CellChoice=2
+SYMM=X,Y,Z;X,-Y+1/2,-Z+1/2
+--------------------------------------------------------------------------------
+SGNum=15
+SGNames=B 2/n 1 1;B2/n11
+Latt=B
+Centro=true
+Setting=6
+CellChoice=2
+SYMM=X,Y,Z;X,-Y+1/2,-Z+1/2
+--------------------------------------------------------------------------------
+SGNum=15
+SGNames=I 1 2/a 1;I12/a1;I 2/a;I2/a
+Latt=I
+Centro=true
+Setting=1
+CellChoice=3
+SYMM=X,Y,Z;-X+1/2,Y,-Z
+--------------------------------------------------------------------------------
+SGNum=15
+SGNames=I 1 2/c 1;I12/c1;I 2/c;I2/c
+Latt=I
+Centro=true
+Setting=2
+CellChoice=3
+SYMM=X,Y,Z;-X,Y,-Z+1/2
+--------------------------------------------------------------------------------
+SGNum=15
+SGNames=I 1 1 2/b;I112/b
+Latt=I
+Centro=true
+Setting=3
+CellChoice=3
+SYMM=X,Y,Z;-X,-Y+1/2,Z
+--------------------------------------------------------------------------------
+SGNum=15
+SGNames=I 1 1 2/a;I112/a
+Latt=I
+Centro=true
+Setting=4
+CellChoice=3
+SYMM=X,Y,Z;-X+1/2,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=15
+SGNames=I 2/c 1 1;I2/c11
+Latt=I
+Centro=true
+Setting=5
+CellChoice=3
+SYMM=X,Y,Z;X,-Y,-Z+1/2
+--------------------------------------------------------------------------------
+SGNum=15
+SGNames=I 2/b 1 1;I2/b11
+Latt=I
+Centro=true
+Setting=6
+CellChoice=3
+SYMM=X,Y,Z;X,-Y+1/2,-Z 
 --------------------------------------------------------------------------------
 SGNum=16
 SGNames=P 2 2 2;P222
 Latt=P
 Centro=false
+Setting=1 2 3 4 5 6
 SYMM=X,Y,Z;-X,-Y,Z;X,-Y,-Z;-X,Y,-Z
 --------------------------------------------------------------------------------
 SGNum=17
 SGNames=P 2 2 21;P2221
 Latt=P
 Centro=false
+Setting=1 2
 SYMM=X,Y,Z;-X,-Y,Z+1/2;X,-Y,-Z;-X,Y,-Z+1/2
+--------------------------------------------------------------------------------
+SGNum=17
+SGNames=P 21 2 2;P2122
+Latt=P
+Centro=false
+Setting=3 4
+SYMM=X,Y,Z;X+1/2,-Y,-Z;-X,Y,-Z;-X+1/2,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=17
+SGNames=P 2 21 2;P2212
+Latt=P
+Centro=false
+Setting=5 6
+SYMM=X,Y,Z;X,-Y+1/2,-Z;-X,Y+1/2,-Z;-X,-Y,Z
 --------------------------------------------------------------------------------
 SGNum=18
 SGNames=P 21 21 2;P21212
 Latt=P
 Centro=false
-SYMM=X,Y,Z;-X,-Y,Z;X+1/2,-Y+1/2,-Z;-X+1/2,Y+1/2,-Z
+Setting=1 2 
+SYMM=X,Y,Z;X+1/2,-Y+1/2,-Z;-X+1/2,Y+1/2,-Z;-X,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=18
+SGNames=P 2 21 21;P22121
+Latt=P
+Centro=false
+Setting=3 4 
+SYMM=X,Y,Z;X,-Y,-Z;-X,Y+1/2,-Z+1/2;-X,-Y+1/2,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=18
+SGNames=P 21 2 21;P21221
+Latt=P
+Centro=false
+Setting=5 6 
+SYMM=X,Y,Z;X+1/2,-Y,-Z+1/2;-X,Y,-Z;-X+1/2,-Y,Z+1/2
 --------------------------------------------------------------------------------
 SGNum=19
 SGNames=P 21 21 21;P212121
 Latt=P
 Centro=false
-SYMM=X,Y,Z;-X+1/2,-Y,Z+1/2;X+1/2,-Y+1/2,-Z;-X,Y+1/2,-Z+1/2
+Setting=1 2 3 4 5 6 
+SYMM=X,Y,Z;X+1/2,-Y+1/2,-Z;-X,Y+1/2,-Z+1/2;-X+1/2,-Y,Z+1/2
 --------------------------------------------------------------------------------
 SGNum=20
 SGNames=C 2 2 21;C2221
 Latt=C
 Centro=false
-SYMM=X,Y,Z;-X,-Y,Z+1/2;X,-Y,-Z;-X,Y,-Z+1/2
+Setting=1 2 
+SYMM=X,Y,Z;X,-Y,-Z;-X,Y,-Z+1/2;-X,-Y,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=20
+SGNames=A 21 2 2;A2122
+Latt=A
+Centro=false
+Setting=3 4 
+SYMM=X,Y,Z;X+1/2,-Y,-Z;-X,Y,-Z;-X+1/2,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=20
+SGNames=B 2 21 2;B2212
+Latt=B
+Centro=false
+Setting=5 6 
+SYMM=X,Y,Z;X,-Y+1/2,-Z;-X,Y+1/2,-Z;-X,-Y,Z
 --------------------------------------------------------------------------------
 SGNum=21
 SGNames=C 2 2 2;C222
 Latt=C
 Centro=false
-SYMM=X,Y,Z;-X,-Y,Z;X,-Y,-Z;-X,Y,-Z
+Setting=1 2 
+SYMM=X,Y,Z;X,-Y,-Z;-X,Y,-Z;-X,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=21
+SGNames=A 2 2 2;A222
+Latt=A
+Centro=false
+Setting=3 4 
+SYMM=X,Y,Z;X,-Y,-Z;-X,Y,-Z;-X,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=21
+SGNames=B 2 2 2;B222
+Latt=B
+Centro=false
+Setting=5 6 
+SYMM=X,Y,Z;X,-Y,-Z;-X,Y,-Z;-X,-Y,Z
 --------------------------------------------------------------------------------
 SGNum=22
 SGNames=F 2 2 2;F222
 Latt=F
 Centro=false
-SYMM=X,Y,Z;-X,-Y,Z;X,-Y,-Z;-X,Y,-Z
+Setting=1 2 3 4 5 6 
+SYMM=X,Y,Z;X,-Y,-Z;-X,Y,-Z;-X,-Y,Z
 --------------------------------------------------------------------------------
 SGNum=23
 SGNames=I 2 2 2;I222
 Latt=I
 Centro=false
-SYMM=X,Y,Z;-X,-Y,Z;X,-Y,-Z;-X,Y,-Z
+Setting=1 2 3 4 5 6 
+SYMM=X,Y,Z;X,-Y,-Z;-X,Y,-Z;-X,-Y,Z
 --------------------------------------------------------------------------------
 SGNum=24
 SGNames=I 21 21 21;I212121
 Latt=I
 Centro=false
-SYMM=X,Y,Z;-X,-Y+1/2,Z;X,-Y,-Z+1/2;-X,Y+1/2,-Z+1/2
+Setting=1 2 3 4 5 6 
+SYMM=X,Y,Z;X+1/2,-Y+1/2,-Z;-X,Y+1/2,-Z+1/2;-X+1/2,-Y,Z+1/2
 --------------------------------------------------------------------------------
 SGNum=25
 SGNames=P m m 2;Pmm2
 Latt=P
 Centro=false
-SYMM=X,Y,Z;-X,-Y,Z;-X,Y,Z;X,-Y,Z
+Setting=1 2 
+SYMM=X,Y,Z;-X,Y,Z;X,-Y,Z;-X,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=25
+SGNames=P 2 m m;P2mm
+Latt=P
+Centro=false
+Setting=3 4 
+SYMM=X,Y,Z;X,-Y,-Z;X,-Y,Z;X,Y,-Z
+--------------------------------------------------------------------------------
+SGNum=25
+SGNames=P m 2 m;Pm2m
+Latt=P
+Centro=false
+Setting=5 6 
+SYMM=X,Y,Z;-X,Y,Z;-X,Y,-Z;X,Y,-Z
 --------------------------------------------------------------------------------
 SGNum=26
 SGNames=P m c 21;Pmc21
 Latt=P
 Centro=false
-SYMM=X,Y,Z;-X,-Y,Z+1/2;-X,Y,Z;X,-Y,Z+1/2
+Setting=1 
+SYMM=X,Y,Z;-X,Y,Z;X,-Y,Z+1/2;-X,-Y,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=26
+SGNames=P c m 21;Pcm21
+Latt=P
+Centro=false
+Setting=2 
+SYMM=X,Y,Z;-X,Y,Z+1/2;X,-Y,Z;-X,-Y,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=26
+SGNames=P 21 m a;P21ma
+Latt=P
+Centro=false
+Setting=3 
+SYMM=X,Y,Z;X+1/2,-Y,-Z;X,-Y,Z;X+1/2,Y,-Z
+--------------------------------------------------------------------------------
+SGNum=26
+SGNames=P 21 a m;P21am
+Latt=P
+Centro=false
+Setting=4 
+SYMM=X,Y,Z;X+1/2,-Y,-Z;X+1/2,-Y,Z;X,Y,-Z
+--------------------------------------------------------------------------------
+SGNum=26
+SGNames=P b 21 m;Pb21m
+Latt=P
+Centro=false
+Setting=5 
+SYMM=X,Y,Z;-X,Y+1/2,Z;-X,Y+1/2,-Z;X,Y,-Z
+--------------------------------------------------------------------------------
+SGNum=26
+SGNames=P m 21 b;Pm21b
+Latt=P
+Centro=false
+Setting=6 
+SYMM=X,Y,Z;-X,Y,Z;-X,Y+1/2,-Z;X,Y+1/2,-Z
 --------------------------------------------------------------------------------
 SGNum=27
 SGNames=P c c 2;Pcc2
 Latt=P
 Centro=false
-SYMM=X,Y,Z;-X,-Y,Z;-X,Y,Z+1/2;X,-Y,Z+1/2
+Setting=1 2 
+SYMM=X,Y,Z;-X,Y,Z+1/2;X,-Y,Z+1/2;-X,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=27
+SGNames=P 2 a a;P2aa
+Latt=P
+Centro=false
+Setting=3 4 
+SYMM=X,Y,Z;X,-Y,-Z;X+1/2,-Y,Z;X+1/2,Y,-Z
+--------------------------------------------------------------------------------
+SGNum=27
+SGNames=P b 2 b;Pb2b
+Latt=P
+Centro=false
+Setting=5 6 
+SYMM=X,Y,Z;-X,Y+1/2,Z;-X,Y,-Z;X,Y+1/2,-Z
 --------------------------------------------------------------------------------
 SGNum=28
 SGNames=P m a 2;Pma2
 Latt=P
 Centro=false
-SYMM=X,Y,Z;-X,-Y,Z;-X+1/2,Y,Z;X+1/2,-Y,Z
+Setting=1 
+SYMM=X,Y,Z;-X+1/2,Y,Z;X+1/2,-Y,Z;-X,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=28
+SGNames=P b m 2;Pbm2
+Latt=P
+Centro=false
+Setting=2 
+SYMM=X,Y,Z;-X,Y+1/2,Z;X,-Y+1/2,Z;-X,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=28
+SGNames=P 2 m b;P2mb
+Latt=P
+Centro=false
+Setting=3 
+SYMM=X,Y,Z;X,-Y,-Z;X,-Y+1/2,Z;X,Y+1/2,-Z
+--------------------------------------------------------------------------------
+SGNum=28
+SGNames=P 2 c m;P2cm
+Latt=P
+Centro=false
+Setting=4 
+SYMM=X,Y,Z;X,-Y,-Z;X,-Y,Z+1/2;X,Y,-Z+1/2
+--------------------------------------------------------------------------------
+SGNum=28
+SGNames=P c 2 m;Pc2m
+Latt=P
+Centro=false
+Setting=5 
+SYMM=X,Y,Z;-X,Y,Z+1/2;-X,Y,-Z;X,Y,-Z+1/2
+--------------------------------------------------------------------------------
+SGNum=28
+SGNames=P m 2 a;Pm2a
+Latt=P
+Centro=false
+Setting=6 
+SYMM=X,Y,Z;-X+1/2,Y,Z;-X,Y,-Z;X+1/2,Y,-Z
 --------------------------------------------------------------------------------
 SGNum=29
 SGNames=P c a 21;Pca21
 Latt=P
 Centro=false
-SYMM=X,Y,Z;-X,-Y,Z+1/2;-X+1/2,Y,Z+1/2;X+1/2,-Y,Z
+Setting=1 
+SYMM=X,Y,Z;-X+1/2,Y,Z+1/2;X+1/2,-Y,Z;-X,-Y,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=29
+SGNames=P b c 21;Pbc21
+Latt=P
+Centro=false
+Setting=2 
+SYMM=X,Y,Z;-X,Y+1/2,Z;X,-Y+1/2,Z+1/2;-X,-Y,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=29
+SGNames=P 21 a b;P21ab
+Latt=P
+Centro=false
+Setting=3 
+SYMM=X,Y,Z;X+1/2,-Y,-Z;X+1/2,-Y+1/2,Z;X,Y+1/2,-Z
+--------------------------------------------------------------------------------
+SGNum=29
+SGNames=P 21 c a;P21ca
+Latt=P
+Centro=false
+Setting=4 
+SYMM=X,Y,Z;X+1/2,-Y,-Z;X,-Y,Z+1/2;X+1/2,Y,-Z+1/2
+--------------------------------------------------------------------------------
+SGNum=29
+SGNames=P c 21 b;Pc21b
+Latt=P
+Centro=false
+Setting=5 
+SYMM=X,Y,Z;-X,Y,Z+1/2;-X,Y+1/2,-Z;X,Y+1/2,-Z+1/2
+--------------------------------------------------------------------------------
+SGNum=29
+SGNames=P b 21 a;Pb21a
+Latt=P
+Centro=false
+Setting=6 
+SYMM=X,Y,Z;-X+1/2,Y+1/2,Z;-X,Y+1/2,-Z;X+1/2,Y,-Z
 --------------------------------------------------------------------------------
 SGNum=30
 SGNames=P n c 2;Pnc2
 Latt=P
 Centro=false
-SYMM=X,Y,Z;-X,-Y,Z;-X,Y+1/2,Z+1/2;X,-Y+1/2,Z+1/2
+Setting=1 
+SYMM=X,Y,Z;-X,Y+1/2,Z+1/2;X,-Y+1/2,Z+1/2;-X,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=30
+SGNames=P c n 2;Pcn2
+Latt=P
+Centro=false
+Setting=2 
+SYMM=X,Y,Z;-X+1/2,Y,Z+1/2;X+1/2,-Y,Z+1/2;-X,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=30
+SGNames=P 2 n a;P2na
+Latt=P
+Centro=false
+Setting=3 
+SYMM=X,Y,Z;X,-Y,-Z;X+1/2,-Y,Z+1/2;X+1/2,Y,-Z+1/2
+--------------------------------------------------------------------------------
+SGNum=30
+SGNames=P 2 a n;P2an
+Latt=P
+Centro=false
+Setting=4 
+SYMM=X,Y,Z;X,-Y,-Z;X+1/2,-Y+1/2,Z;X+1/2,Y+1/2,-Z
+--------------------------------------------------------------------------------
+SGNum=30
+SGNames=P b 2 n;Pb2n
+Latt=P
+Centro=false
+Setting=5 
+SYMM=X,Y,Z;-X+1/2,Y+1/2,Z;-X,Y,-Z;X+1/2,Y+1/2,-Z
+--------------------------------------------------------------------------------
+SGNum=30
+SGNames=P n 2 b;Pn2b
+Latt=P
+Centro=false
+Setting=6 
+SYMM=X,Y,Z;-X,Y+1/2,Z+1/2;-X,Y,-Z;X,Y+1/2,-Z+1/2
 --------------------------------------------------------------------------------
 SGNum=31
 SGNames=P m n 21;Pmn21
 Latt=P
 Centro=false
-SYMM=X,Y,Z;-X+1/2,-Y,Z+1/2;-X,Y,Z;X+1/2,-Y,Z+1/2
+Setting=1 
+SYMM=X,Y,Z;-X,Y,Z;X+1/2,-Y,Z+1/2;-X+1/2,-Y,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=31
+SGNames=P n m 21;Pnm21
+Latt=P
+Centro=false
+Setting=2 
+SYMM=X,Y,Z;-X,-Y+1/2,Z+1/2;-X,Y+1/2,Z+1/2;X,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=31
+SGNames=P 21 m n;P21mn
+Latt=P
+Centro=false
+Setting=3 
+SYMM=X,Y,Z;X+1/2,-Y+1/2,-Z;X,-Y,Z;X+1/2,Y+1/2,-Z
+--------------------------------------------------------------------------------
+SGNum=0
+SGNames=unknown;unknown
+Latt=u
+Centro=false
+Setting=4 
+SYMM=--------------------------------------------------------------------------------
+SGNum=31
+SGNames=P n 21 m;Pn21m
+Latt=P
+Centro=false
+Setting=5 
+SYMM=X,Y,Z;-X,Y+1/2,Z+1/2;-X,Y+1/2,-Z+1/2;X,Y,-Z
+--------------------------------------------------------------------------------
+SGNum=31
+SGNames=P m 21 n;Pm21n
+Latt=P
+Centro=false
+Setting=6 
+SYMM=X,Y,Z;X+1/2,Y+1/2,-Z;-X,Y,Z;-X+1/2,Y+1/2,-Z
 --------------------------------------------------------------------------------
 SGNum=32
 SGNames=P b a 2;Pba2
 Latt=P
 Centro=false
-SYMM=X,Y,Z;-X,-Y,Z;-X+1/2,Y+1/2,Z;X+1/2,-Y+1/2,Z
+Setting=1 2 
+SYMM=X,Y,Z;-X+1/2,Y+1/2,Z;X+1/2,-Y+1/2,Z;-X,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=32
+SGNames=P 2 c b;P2cb
+Latt=P
+Centro=false
+Setting=3 4 
+SYMM=X,Y,Z;X,-Y,-Z;X,-Y+1/2,Z+1/2;X,Y+1/2,-Z+1/2
+--------------------------------------------------------------------------------
+SGNum=32
+SGNames=P c 2 a;Pc2a
+Latt=P
+Centro=false
+Setting=5 6 
+SYMM=X,Y,Z;-X+1/2,Y,Z+1/2;-X,Y,-Z;X+1/2,Y,-Z+1/2
 --------------------------------------------------------------------------------
 SGNum=33
 SGNames=P n a 21;Pna21
 Latt=P
 Centro=false
-SYMM=X,Y,Z;-X,-Y,Z+1/2;-X+1/2,Y+1/2,Z+1/2;X+1/2,-Y+1/2,Z
+Setting=1 
+SYMM=X,Y,Z;-X+1/2,Y+1/2,Z+1/2;X+1/2,-Y+1/2,Z;-X,-Y,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=33
+SGNames=P b n 21;Pbn21
+Latt=P
+Centro=false
+Setting=2 
+SYMM=X,Y,Z;-X+1/2,Y+1/2,Z;X+1/2,-Y+1/2,Z+1/2;-X,-Y,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=33
+SGNames=P 21 n b;P21nb
+Latt=P
+Centro=false
+Setting=3 
+SYMM=X,Y,Z;X+1/2,-Y,-Z;X+1/2,-Y+1/2,Z+1/2;X,Y+1/2,-Z+1/2
+--------------------------------------------------------------------------------
+SGNum=0
+SGNames=unknown;unknown
+Latt=u
+Centro=false
+Setting=4 
+SYMM=--------------------------------------------------------------------------------
+SGNum=33
+SGNames=P c 21 n;Pc21n
+Latt=P
+Centro=false
+Setting=5 
+SYMM=X,Y,Z;-X+1/2,Y,Z+1/2;-X,Y+1/2,-Z;X+1/2,Y+1/2,-Z+1/2
+--------------------------------------------------------------------------------
+SGNum=33
+SGNames=P n 21 a;Pn21a
+Latt=P
+Centro=false
+Setting=6 
+SYMM=X,Y,Z;-X+1/2,Y+1/2,Z+1/2;-X,Y+1/2,-Z;X+1/2,Y,-Z+1/2
 --------------------------------------------------------------------------------
 SGNum=34
 SGNames=P n n 2;Pnn2
 Latt=P
 Centro=false
-SYMM=X,Y,Z;-X,-Y,Z;-X+1/2,Y+1/2,Z+1/2;X+1/2,-Y+1/2,Z+1/2
+Setting=1 2 
+SYMM=X,Y,Z;-X+1/2,Y+1/2,Z+1/2;X+1/2,-Y+1/2,Z+1/2;-X,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=34
+SGNames=P 2 n n;P2nn
+Latt=P
+Centro=false
+Setting=3 4 
+SYMM=X,Y,Z;X,-Y,-Z;X+1/2,-Y+1/2,Z+1/2;X+1/2,Y+1/2,-Z+1/2
+--------------------------------------------------------------------------------
+SGNum=34
+SGNames=P n 2 n;Pn2n
+Latt=P
+Centro=false
+Setting=5 6 
+SYMM=X,Y,Z;-X+1/2,Y+1/2,Z+1/2;-X,Y,-Z;X+1/2,Y+1/2,-Z+1/2
 --------------------------------------------------------------------------------
 SGNum=35
 SGNames=C m m 2;Cmm2
 Latt=C
 Centro=false
-SYMM=X,Y,Z;-X,-Y,Z;-X,Y,Z;X,-Y,Z
+Setting=1 2 
+SYMM=X,Y,Z;-X,Y,Z;X,-Y,Z;-X,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=35
+SGNames=A 2 m m;A2mm
+Latt=A
+Centro=false
+Setting=3 4 
+SYMM=X,Y,Z;X,-Y,-Z;X,-Y,Z;X,Y,-Z
+--------------------------------------------------------------------------------
+SGNum=35
+SGNames=B m 2 m;Bm2m
+Latt=B
+Centro=false
+Setting=5 6 
+SYMM=X,Y,Z;-X,Y,Z;-X,Y,-Z;X,Y,-Z
 --------------------------------------------------------------------------------
 SGNum=36
 SGNames=C m c 21;Cmc21
 Latt=C
 Centro=false
-SYMM=X,Y,Z;-X,-Y,Z+1/2;-X,Y,Z;X,-Y,Z+1/2
+Setting=1 
+SYMM=X,Y,Z;-X,Y,Z;X,-Y,Z+1/2;-X,-Y,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=36
+SGNames=C c m 21;Ccm21
+Latt=C
+Centro=false
+Setting=2 
+SYMM=X,Y,Z;-X,Y,Z+1/2;X,-Y,Z;-X,-Y,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=36
+SGNames=A 21 m a;A21ma
+Latt=A
+Centro=false
+Setting=3 
+SYMM=X,Y,Z;X+1/2,-Y,-Z;X,-Y,Z;X+1/2,Y,-Z
+--------------------------------------------------------------------------------
+SGNum=36
+SGNames=A 21 a m;A21am
+Latt=A
+Centro=false
+Setting=4 
+SYMM=X,Y,Z;X+1/2,-Y,-Z;X+1/2,-Y,Z;X,Y,-Z
+--------------------------------------------------------------------------------
+SGNum=36
+SGNames=B b 21 m;Bb21m
+Latt=B
+Centro=false
+Setting=5 
+SYMM=X,Y,Z;-X,Y+1/2,Z;-X,Y+1/2,-Z;X,Y,-Z
+--------------------------------------------------------------------------------
+SGNum=36
+SGNames=B m 21 b;Bm21b
+Latt=B
+Centro=false
+Setting=6 
+SYMM=X,Y,Z;-X,Y,Z;-X,Y+1/2,-Z;X,Y+1/2,-Z
 --------------------------------------------------------------------------------
 SGNum=37
 SGNames=C c c 2;Ccc2
 Latt=C
 Centro=false
-SYMM=X,Y,Z;-X,-Y,Z;-X,Y,Z+1/2;X,-Y,Z+1/2
+Setting=1 2 
+SYMM=X,Y,Z;-X,Y,Z+1/2;X,-Y,Z+1/2;-X,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=37
+SGNames=A 2 a a;A2aa
+Latt=A
+Centro=false
+Setting=3 4 
+SYMM=X,Y,Z;X,-Y,-Z;X+1/2,-Y,Z;X+1/2,Y,-Z
+--------------------------------------------------------------------------------
+SGNum=37
+SGNames=B b 2 b;Bb2b
+Latt=B
+Centro=false
+Setting=5 6 
+SYMM=X,Y,Z;-X,Y+1/2,Z;-X,Y,-Z;X,Y+1/2,-Z
 --------------------------------------------------------------------------------
 SGNum=38
 SGNames=A m m 2;Amm2
 Latt=A
 Centro=false
-SYMM=X,Y,Z;-X,-Y,Z;-X,Y,Z;X,-Y,Z
+Setting=1 
+SYMM=X,Y,Z;-X,Y,Z;X,-Y,Z;-X,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=38
+SGNames=B m m 2;Bmm2
+Latt=B
+Centro=false
+Setting=2 
+SYMM=X,Y,Z;-X,Y,Z;X,-Y,Z;-X,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=38
+SGNames=B 2 m m;B2mm
+Latt=B
+Centro=false
+Setting=3 
+SYMM=X,Y,Z;X,-Y,-Z;X,-Y,Z;X,Y,-Z
+--------------------------------------------------------------------------------
+SGNum=38
+SGNames=C 2 m m;C2mm
+Latt=C
+Centro=false
+Setting=4 
+SYMM=X,Y,Z;X,-Y,-Z;X,-Y,Z;X,Y,-Z
+--------------------------------------------------------------------------------
+SGNum=38
+SGNames=C m 2 m;Cm2m
+Latt=C
+Centro=false
+Setting=5 
+SYMM=X,Y,Z;-X,Y,Z;-X,Y,-Z;X,Y,-Z
+--------------------------------------------------------------------------------
+SGNum=38
+SGNames=A m 2 m;Am2m
+Latt=A
+Centro=false
+Setting=6 
+SYMM=X,Y,Z;-X,Y,Z;-X,Y,-Z;X,Y,-Z
 --------------------------------------------------------------------------------
 SGNum=39
 SGNames=A b m 2;Abm2
 Latt=A
 Centro=false
-SYMM=X,Y,Z;-X,-Y,Z;-X,Y,Z+1/2;X,-Y,Z+1/2
+Setting=1 
+SYMM=X,Y,Z;-X,Y+1/2,Z;X,-Y+1/2,Z;-X,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=39
+SGNames=B m a 2;Bma2
+Latt=B
+Centro=false
+Setting=2 
+SYMM=X,Y,Z;-X+1/2,Y,Z;X+1/2,-Y,Z;-X,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=39
+SGNames=B 2 c m;B2cm
+Latt=B
+Centro=false
+Setting=3 
+SYMM=X,Y,Z;X,-Y,-Z;X,-Y,Z+1/2;X,Y,-Z+1/2
+--------------------------------------------------------------------------------
+SGNum=39
+SGNames=C 2 m b;C2mb
+Latt=C
+Centro=false
+Setting=4 
+SYMM=X,Y,Z;X,-Y,-Z;X,-Y+1/2,Z;X,Y+1/2,-Z
+--------------------------------------------------------------------------------
+SGNum=39
+SGNames=C m 2 a;Cm2a
+Latt=C
+Centro=false
+Setting=5 
+SYMM=X,Y,Z;-X+1/2,Y,Z;-X,Y,-Z;X+1/2,Y,-Z
+--------------------------------------------------------------------------------
+SGNum=39
+SGNames=A c 2 m;Ac2m
+Latt=A
+Centro=false
+Setting=6 
+SYMM=X,Y,Z;-X,Y,Z+1/2;-X,Y,-Z;X,Y,-Z+1/2
 --------------------------------------------------------------------------------
 SGNum=40
 SGNames=A m a 2;Ama2
 Latt=A
 Centro=false
-SYMM=X,Y,Z;-X,-Y,Z;-X+1/2,Y,Z;X+1/2,-Y,Z
+Setting=1 
+SYMM=X,Y,Z;-X+1/2,Y,Z;X+1/2,-Y,Z;-X,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=40
+SGNames=B b m 2;Bbm2
+Latt=B
+Centro=false
+Setting=2 
+SYMM=X,Y,Z;-X,Y+1/2,Z;X,-Y+1/2,Z;-X,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=40
+SGNames=B 2 m b;B2mb
+Latt=B
+Centro=false
+Setting=3 
+SYMM=X,Y,Z;X,-Y,-Z;X,-Y+1/2,Z;X,Y+1/2,-Z
+--------------------------------------------------------------------------------
+SGNum=40
+SGNames=C 2 c m;C2cm
+Latt=C
+Centro=false
+Setting=4 
+SYMM=X,Y,Z;X,-Y,-Z;X,-Y,Z+1/2;X,Y,-Z+1/2
+--------------------------------------------------------------------------------
+SGNum=40
+SGNames=C c 2 m;Cc2m
+Latt=C
+Centro=false
+Setting=5 
+SYMM=X,Y,Z;-X,Y,Z+1/2;-X,Y,-Z;X,Y,-Z+1/2
+--------------------------------------------------------------------------------
+SGNum=40
+SGNames=A m 2 a;Am2a
+Latt=A
+Centro=false
+Setting=6 
+SYMM=X,Y,Z;-X+1/2,Y,Z;-X,Y,-Z;X+1/2,Y,-Z
 --------------------------------------------------------------------------------
 SGNum=41
 SGNames=A b a 2;Aba2
 Latt=A
 Centro=false
-SYMM=X,Y,Z;-X,-Y,Z;-X+1/2,Y,Z+1/2;X+1/2,-Y,Z+1/2
+Setting=1 
+SYMM=X,Y,Z;-X+1/2,Y+1/2,Z;X+1/2,-Y+1/2,Z;-X,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=41
+SGNames=B b a 2;Bba2
+Latt=B
+Centro=false
+Setting=2 
+SYMM=X,Y,Z;-X+1/2,Y+1/2,Z;X+1/2,-Y+1/2,Z;-X,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=41
+SGNames=B 2 c b;B2cb
+Latt=B
+Centro=false
+Setting=3 
+SYMM=X,Y,Z;X,-Y,-Z;X,-Y+1/2,Z+1/2;X,Y+1/2,-Z+1/2
+--------------------------------------------------------------------------------
+SGNum=41
+SGNames=C 2 c b;C2cb
+Latt=C
+Centro=false
+Setting=4 
+SYMM=X,Y,Z;X,-Y,-Z;X,-Y+1/2,Z+1/2;X,Y+1/2,-Z+1/2
+--------------------------------------------------------------------------------
+SGNum=41
+SGNames=C c 2 a;Cc2a
+Latt=C
+Centro=false
+Setting=5 
+SYMM=X,Y,Z;-X+1/2,Y,Z+1/2;-X,Y,-Z;X+1/2,Y,-Z+1/2
+--------------------------------------------------------------------------------
+SGNum=41
+SGNames=A c 2 a;Ac2a
+Latt=A
+Centro=false
+Setting=6 
+SYMM=X,Y,Z;-X+1/2,Y,Z+1/2;-X,Y,-Z;X+1/2,Y,-Z+1/2
 --------------------------------------------------------------------------------
 SGNum=42
 SGNames=F m m 2;Fmm2
 Latt=F
 Centro=false
-SYMM=X,Y,Z;-X,-Y,Z;-X,Y,Z;X,-Y,Z
+Setting=1 2 
+SYMM=X,Y,Z;-X,Y,Z;X,-Y,Z;-X,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=42
+SGNames=F 2 m m;F2mm
+Latt=F
+Centro=false
+Setting=3 4 
+SYMM=X,Y,Z;X,-Y,-Z;X,-Y,Z;X,Y,-Z
+--------------------------------------------------------------------------------
+SGNum=42
+SGNames=F m 2 m;Fm2m
+Latt=F
+Centro=false
+Setting=5 6 
+SYMM=X,Y,Z;-X,Y,Z;-X,Y,-Z;X,Y,-Z
 --------------------------------------------------------------------------------
 SGNum=43
 SGNames=F d d 2;Fdd2
 Latt=F
 Centro=false
-SYMM=X,Y,Z;-X,-Y,Z;-X+1/4,Y+1/4,Z+1/4;X+1/4,-Y+1/4,Z+1/4
+Setting=1 2 
+SYMM=X,Y,Z;-X+1/4,Y+1/4,Z+1/4;X+1/4,-Y+1/4,Z+1/4;-X,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=43
+SGNames=F 2 d d;F2dd
+Latt=F
+Centro=false
+Setting=3 4 
+SYMM=X,Y,Z;X,-Y,-Z;X+1/4,-Y+1/4,Z+1/4;X+1/4,Y+1/4,-Z+1/4
+--------------------------------------------------------------------------------
+SGNum=43
+SGNames=F d 2 d;Fd2d
+Latt=F
+Centro=false
+Setting=5 6 
+SYMM=X,Y,Z;-X+1/4,Y+1/4,Z+1/4;-X,Y,-Z;X+1/4,Y+1/4,-Z+1/4
 --------------------------------------------------------------------------------
 SGNum=44
 SGNames=I m m 2;Imm2
 Latt=I
 Centro=false
-SYMM=X,Y,Z;-X,-Y,Z;-X,Y,Z;X,-Y,Z
+Setting=1 2 
+SYMM=X,Y,Z;-X,Y,Z;X,-Y,Z;-X,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=44
+SGNames=I 2 m m;I2mm
+Latt=I
+Centro=false
+Setting=3 4 
+SYMM=X,Y,Z;X,-Y,-Z;X,-Y,Z;X,Y,-Z
+--------------------------------------------------------------------------------
+SGNum=44
+SGNames=I m 2 m;Im2m
+Latt=I
+Centro=false
+Setting=5 6 
+SYMM=X,Y,Z;-X,Y,Z;-X,Y,-Z;X,Y,-Z
 --------------------------------------------------------------------------------
 SGNum=45
 SGNames=I b a 2;Iba2
 Latt=I
 Centro=false
-SYMM=X,Y,Z;-X,-Y,Z;-X,Y,Z+1/2;X,-Y,Z+1/2
+Setting=1 2 
+SYMM=X,Y,Z;-X+1/2,Y+1/2,Z;X+1/2,-Y+1/2,Z;-X,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=45
+SGNames=I 2 c b;I2cb
+Latt=I
+Centro=false
+Setting=3 4 
+SYMM=X,Y,Z;X,-Y,-Z;X,-Y+1/2,Z+1/2;X,Y+1/2,-Z+1/2
+--------------------------------------------------------------------------------
+SGNum=45
+SGNames=I c 2 a;Ic2a
+Latt=I
+Centro=false
+Setting=5 6 
+SYMM=X,Y,Z;-X+1/2,Y,Z+1/2;-X,Y,-Z;X+1/2,Y,-Z+1/2
 --------------------------------------------------------------------------------
 SGNum=46
 SGNames=I m a 2;Ima2
 Latt=I
 Centro=false
-SYMM=X,Y,Z;-X,-Y,Z;-X+1/2,Y,Z;X+1/2,-Y,Z
+Setting=1 
+SYMM=X,Y,Z;-X+1/2,Y,Z;X+1/2,-Y,Z;-X,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=46
+SGNames=I b m 2;Ibm2
+Latt=I
+Centro=false
+Setting=2 
+SYMM=X,Y,Z;-X,Y+1/2,Z;X,-Y+1/2,Z;-X,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=46
+SGNames=I 2 m b;I2mb
+Latt=I
+Centro=false
+Setting=3 
+SYMM=X,Y,Z;X,-Y,-Z;X,-Y+1/2,Z;X,Y+1/2,-Z
+--------------------------------------------------------------------------------
+SGNum=46
+SGNames=I 2 c m;I2cm
+Latt=I
+Centro=false
+Setting=4 
+SYMM=X,Y,Z;X,-Y,-Z;X,-Y,Z+1/2;X,Y,-Z+1/2
+--------------------------------------------------------------------------------
+SGNum=46
+SGNames=I c 2 m;Ic2m
+Latt=I
+Centro=false
+Setting=5 
+SYMM=X,Y,Z;-X,Y,Z+1/2;-X,Y,-Z;X,Y,-Z+1/2
+--------------------------------------------------------------------------------
+SGNum=46
+SGNames=I m 2 a;Im2a
+Latt=I
+Centro=false
+Setting=6 
+SYMM=X,Y,Z;-X+1/2,Y,Z;-X,Y,-Z;X+1/2,Y,-Z
 --------------------------------------------------------------------------------
 SGNum=47
 SGNames=P m m m;Pmmm
 Latt=P
 Centro=true
-SYMM=X,Y,Z;-X,-Y,Z;X,-Y,-Z;-X,Y,-Z
+Setting=1 2 3 4 5 6 
+SYMM=X,Y,Z;X,-Y,-Z;-X,Y,-Z;-X,-Y,Z
 --------------------------------------------------------------------------------
 SGNum=48
 SGNames=P n n n;Pnnn
 Latt=P
 Centro=true
-SYMM=X,Y,Z;-X,-Y,Z;X,-Y,-Z;-X,Y,-Z
+Setting=1 2 3 4 5 6 
+SYMM=X,Y,Z;X,-Y+1/2,-Z+1/2;-X+1/2,Y,-Z+1/2;-X+1/2,-Y+1/2,Z
 --------------------------------------------------------------------------------
 SGNum=49
 SGNames=P c c m;Pccm
 Latt=P
 Centro=true
-SYMM=X,Y,Z;-X,-Y,Z;X,-Y,-Z+1/2;-X,Y,-Z+1/2
+Setting=1 2 
+SYMM=X,Y,Z;X,-Y,-Z+1/2;-X,Y,-Z+1/2;-X,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=49
+SGNames=P m a a;Pmaa
+Latt=P
+Centro=true
+Setting=3 4 
+SYMM=X,Y,Z;X,-Y,-Z;-X+1/2,Y,-Z;-X+1/2,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=49
+SGNames=P b m b;Pbmb
+Latt=P
+Centro=true
+Setting=5 6 
+SYMM=X,Y,Z;X,-Y+1/2,-Z;-X,Y,-Z;-X,-Y+1/2,Z
 --------------------------------------------------------------------------------
 SGNum=50
 SGNames=P b a n;Pban
 Latt=P
 Centro=true
-SYMM=X,Y,Z;-X,-Y,Z;X,-Y,-Z;-X,Y,-Z
+Setting=1 2 
+SYMM=X,Y,Z;X,-Y+1/2,-Z;-X+1/2,Y,-Z;-X+1/2,-Y+1/2,Z
+--------------------------------------------------------------------------------
+SGNum=50
+SGNames=P n c b;Pncb
+Latt=P
+Centro=true
+Setting=3 4 
+SYMM=X,Y,Z;X,-Y+1/2,-Z+1/2;-X,Y,-Z+1/2;-X,-Y+1/2,Z
+--------------------------------------------------------------------------------
+SGNum=50
+SGNames=P c n a;Pcna
+Latt=P
+Centro=true
+Setting=5 6 
+SYMM=X,Y,Z;X,-Y,-Z+1/2;-X+1/2,Y,-Z+1/2;-X+1/2,-Y,Z
 --------------------------------------------------------------------------------
 SGNum=51
 SGNames=P m m a;Pmma
 Latt=P
 Centro=true
-SYMM=X,Y,Z;-X+1/2,-Y,Z;X+1/2,-Y,-Z;-X,Y,-Z
+Setting=1 
+SYMM=X,Y,Z;X+1/2,-Y,-Z;-X,Y,-Z;-X+1/2,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=51
+SGNames=P m m b;Pmmb
+Latt=P
+Centro=true
+Setting=2 
+SYMM=X,Y,Z;X,-Y,-Z;-X,Y+1/2,-Z;-X,-Y+1/2,Z
+--------------------------------------------------------------------------------
+SGNum=51
+SGNames=P b m m;Pbmm
+Latt=P
+Centro=true
+Setting=3 
+SYMM=X,Y,Z;X,-Y+1/2,-Z;-X,Y+1/2,-Z;-X,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=51
+SGNames=P c m m;Pcmm
+Latt=P
+Centro=true
+Setting=4 
+SYMM=X,Y,Z;X,-Y,-Z+1/2;-X,Y,-Z;-X,-Y,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=51
+SGNames=P m c m;Pmcm
+Latt=P
+Centro=true
+Setting=5 
+SYMM=X,Y,Z;X,-Y,-Z;-X,Y,-Z+1/2;-X,-Y,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=51
+SGNames=P m a m;Pmam
+Latt=P
+Centro=true
+Setting=6 
+SYMM=X,Y,Z;X+1/2,-Y,-Z;-X+1/2,Y,-Z;-X,-Y,Z
 --------------------------------------------------------------------------------
 SGNum=52
 SGNames=P n n a;Pnna
 Latt=P
 Centro=true
-SYMM=X,Y,Z;-X+1/2,-Y,Z;X,-Y+1/2,-Z+1/2;-X+1/2,Y+1/2,-Z+1/2
+Setting=1 
+SYMM=X,Y,Z;X,-Y+1/2,-Z+1/2;-X+1/2,Y+1/2,-Z+1/2;-X+1/2,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=52
+SGNames=P n n b;Pnnb
+Latt=P
+Centro=true
+Setting=2 
+SYMM=X,Y,Z;X+1/2,-Y+1/2,-Z+1/2;-X+1/2,Y,-Z+1/2;-X,-Y+1/2,Z
+--------------------------------------------------------------------------------
+SGNum=52
+SGNames=P b n n;Pbnn
+Latt=P
+Centro=true
+Setting=3 
+SYMM=X,Y,Z;X,-Y+1/2,-Z;-X+1/2,Y,-Z+1/2;-X+1/2,-Y+1/2,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=52
+SGNames=P c n n;Pcnn
+Latt=P
+Centro=true
+Setting=4 
+SYMM=X,Y,Z;X,-Y,-Z+1/2;-X+1/2,Y+1/2,-Z+1/2;-X+1/2,-Y+1/2,Z
+--------------------------------------------------------------------------------
+SGNum=52
+SGNames=P n c n;Pncn
+Latt=P
+Centro=true
+Setting=5 
+SYMM=X,Y,Z;X+1/2,-Y+1/2,-Z+1/2;-X,Y,-Z+1/2;-X+1/2,-Y+1/2,Z
+--------------------------------------------------------------------------------
+SGNum=52
+SGNames=P n a n;Pnan
+Latt=P
+Centro=true
+Setting=6 
+SYMM=X,Y,Z;X,-Y+1/2,-Z+1/2;-X+1/2,Y,-Z;-X+1/2,-Y+1/2,Z+1/2
 --------------------------------------------------------------------------------
 SGNum=53
 SGNames=P m n a;Pmna
 Latt=P
 Centro=true
-SYMM=X,Y,Z;-X+1/2,-Y,Z+1/2;X,-Y,-Z;-X+1/2,Y,-Z+1/2
+Setting=1 
+SYMM=X,Y,Z;X,-Y,-Z;-X+1/2,Y,-Z+1/2;-X+1/2,-Y,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=53
+SGNames=P n m b;Pnmb
+Latt=P
+Centro=true
+Setting=2 
+SYMM=X,Y,Z;X,-Y+1/2,-Z+1/2;-X,Y,-Z;-X,-Y+1/2,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=53
+SGNames=P b m n;Pbmn
+Latt=P
+Centro=true
+Setting=3 
+SYMM=X,Y,Z;X+1/2,-Y+1/2,-Z;-X,Y,-Z;-X+1/2,-Y+1/2,Z
+--------------------------------------------------------------------------------
+SGNum=53
+SGNames=P c n m;Pcnm
+Latt=P
+Centro=true
+Setting=4 
+SYMM=X,Y,Z;X+1/2,-Y,-Z+1/2;-X+1/2,Y,-Z+1/2;-X,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=53
+SGNames=P n c m;Pncm
+Latt=P
+Centro=true
+Setting=5 
+SYMM=X,Y,Z;X,-Y+1/2,-Z+1/2;-X,Y+1/2,-Z+1/2;-X,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=53
+SGNames=P m a n;Pman
+Latt=P
+Centro=true
+Setting=6 
+SYMM=X,Y,Z;X,-Y,-Z;-X+1/2,Y+1/2,-Z;-X+1/2,-Y+1/2,Z
 --------------------------------------------------------------------------------
 SGNum=54
 SGNames=P c c a;Pcca
 Latt=P
 Centro=true
-SYMM=X,Y,Z;-X+1/2,-Y,Z;X+1/2,-Y,-Z+1/2;-X,Y,-Z+1/2
+Setting=1 
+SYMM=X,Y,Z;X+1/2,-Y,-Z+1/2;-X,Y,-Z+1/2;-X+1/2,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=54
+SGNames=P c c b;Pccb
+Latt=P
+Centro=true
+Setting=2 
+SYMM=X,Y,Z;X,-Y,-Z+1/2;-X,Y+1/2,-Z+1/2;-X,-Y+1/2,Z
+--------------------------------------------------------------------------------
+SGNum=54
+SGNames=P b a a;Pbaa
+Latt=P
+Centro=true
+Setting=3 
+SYMM=X,Y,Z;X,-Y+1/2,-Z;-X+1/2,Y+1/2,-Z;-X+1/2,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=54
+SGNames=P c a a;Pcaa
+Latt=P
+Centro=true
+Setting=4 
+SYMM=X,Y,Z;X,-Y,-Z+1/2;-X+1/2,Y,-Z;-X+1/2,-Y,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=54
+SGNames=P b c b;Pbcb
+Latt=P
+Centro=true
+Setting=5 
+SYMM=X,Y,Z;X,-Y+1/2,-Z;-X,Y,-Z+1/2;-X,-Y+1/2,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=54
+SGNames=P b a b;Pbab
+Latt=P
+Centro=true
+Setting=6 
+SYMM=X,Y,Z;X+1/2,-Y+1/2,-Z;-X+1/2,Y,-Z;-X,-Y+1/2,Z
 --------------------------------------------------------------------------------
 SGNum=55
 SGNames=P b a m;Pbam
 Latt=P
 Centro=true
-SYMM=X,Y,Z;-X,-Y,Z;X+1/2,-Y+1/2,-Z;-X+1/2,Y+1/2,-Z
+Setting=1 2 
+SYMM=X,Y,Z;X+1/2,-Y+1/2,-Z;-X+1/2,Y+1/2,-Z;-X,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=55
+SGNames=P m c b;Pmcb
+Latt=P
+Centro=true
+Setting=3 4 
+SYMM=X,Y,Z;X,-Y,-Z;-X,Y+1/2,-Z+1/2;-X,-Y+1/2,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=55
+SGNames=P c m a;Pcma
+Latt=P
+Centro=true
+Setting=5 6 
+SYMM=X,Y,Z;X+1/2,-Y,-Z+1/2;-X,Y,-Z;-X+1/2,-Y,Z+1/2
 --------------------------------------------------------------------------------
 SGNum=56
 SGNames=P c c n;Pccn
 Latt=P
 Centro=true
-SYMM=X,Y,Z;-X+1/2,-Y+1/2,Z;X+1/2,-Y,-Z+1/2;-X,Y+1/2,-Z+1/2
+Setting=1 2 
+SYMM=X,Y,Z;X+1/2,-Y,-Z+1/2;-X,Y+1/2,-Z+1/2;-X+1/2,-Y+1/2,Z
+--------------------------------------------------------------------------------
+SGNum=56
+SGNames=P n a a;Pnaa
+Latt=P
+Centro=true
+Setting=3 4 
+SYMM=X,Y,Z;X,-Y+1/2,-Z+1/2;-X+1/2,Y+1/2,-Z;-X+1/2,-Y,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=56
+SGNames=P b n b;Pbnb
+Latt=P
+Centro=true
+Setting=5 6 
+SYMM=X,Y,Z;X+1/2,-Y+1/2,-Z;-X+1/2,Y,-Z+1/2;-X,-Y+1/2,Z+1/2
 --------------------------------------------------------------------------------
 SGNum=57
 SGNames=P b c m;Pbcm
 Latt=P
 Centro=true
-SYMM=X,Y,Z;-X,-Y,Z+1/2;X,-Y+1/2,-Z;-X,Y+1/2,-Z+1/2
+Setting=1 
+SYMM=X,Y,Z;X,-Y+1/2,-Z;-X,Y+1/2,-Z+1/2;-X,-Y,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=57
+SGNames=P c a m;Pcam
+Latt=P
+Centro=true
+Setting=2 
+SYMM=X,Y,Z;X+1/2,-Y,-Z+1/2;-X+1/2,Y,-Z;-X,-Y,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=57
+SGNames=P m c a;Pmca
+Latt=P
+Centro=true
+Setting=3 
+SYMM=X,Y,Z;X+1/2,-Y,-Z;-X,Y,-Z+1/2;-X+1/2,-Y,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=57
+SGNames=P m a b;Pmab
+Latt=P
+Centro=true
+Setting=4 
+SYMM=X,Y,Z;X+1/2,-Y,-Z;-X+1/2,Y+1/2,-Z;-X,-Y+1/2,Z
+--------------------------------------------------------------------------------
+SGNum=57
+SGNames=P b m a;Pbma
+Latt=P
+Centro=true
+Setting=5 
+SYMM=X,Y,Z;X+1/2,-Y+1/2,-Z;-X,Y+1/2,-Z;-X+1/2,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=57
+SGNames=P c m b;Pcmb
+Latt=P
+Centro=true
+Setting=6 
+SYMM=X,Y,Z;X,-Y,-Z+1/2;-X,Y+1/2,-Z;-X,-Y+1/2,Z+1/2
 --------------------------------------------------------------------------------
 SGNum=58
 SGNames=P n n m;Pnnm
 Latt=P
 Centro=true
-SYMM=X,Y,Z;-X,-Y,Z;X+1/2,-Y+1/2,-Z+1/2;-X+1/2,Y+1/2,-Z+1/2
+Setting=1 2 
+SYMM=X,Y,Z;X+1/2,-Y+1/2,-Z+1/2;-X+1/2,Y+1/2,-Z+1/2;-X,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=58
+SGNames=P m n n;Pmnn
+Latt=P
+Centro=true
+Setting=3 4 
+SYMM=X,Y,Z;X,-Y,-Z;-X+1/2,Y+1/2,-Z+1/2;-X+1/2,-Y+1/2,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=58
+SGNames=P n m n;Pnmn
+Latt=P
+Centro=true
+Setting=5 6 
+SYMM=X,Y,Z;X+1/2,-Y+1/2,-Z+1/2;-X,Y,-Z;-X+1/2,-Y+1/2,Z+1/2
 --------------------------------------------------------------------------------
 SGNum=59
 SGNames=P m m n;Pmmn
 Latt=P
 Centro=true
-SYMM=X,Y,Z;-X,-Y,Z;X+1/2,-Y+1/2,-Z;-X+1/2,Y+1/2,-Z
+Setting=1 2 
+SYMM=X,Y,Z;X+1/2,-Y,-Z;-X,Y+1/2,-Z;-X+1/2,-Y+1/2,Z
+--------------------------------------------------------------------------------
+SGNum=59
+SGNames=P n m m;Pnmm
+Latt=P
+Centro=true
+Setting=3 4 
+SYMM=X,Y,Z;X,-Y+1/2,-Z+1/2;-X,Y+1/2,-Z;-X,-Y,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=59
+SGNames=P m n m;Pmnm
+Latt=P
+Centro=true
+Setting=5 6 
+SYMM=X,Y,Z;X+1/2,-Y,-Z;-X+1/2,Y,-Z+1/2;-X,-Y,Z+1/2
 --------------------------------------------------------------------------------
 SGNum=60
 SGNames=P b c n;Pbcn
 Latt=P
 Centro=true
-SYMM=X,Y,Z;-X+1/2,-Y+1/2,Z+1/2;X+1/2,-Y+1/2,-Z;-X,Y,-Z+1/2
+Setting=1 
+SYMM=X,Y,Z;X+1/2,-Y+1/2,-Z;-X,Y,-Z+1/2;-X+1/2,-Y+1/2,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=60
+SGNames=P c a n;Pcan
+Latt=P
+Centro=true
+Setting=2 
+SYMM=X,Y,Z;X,-Y,-Z+1/2;-X+1/2,Y+1/2,-Z;-X+1/2,-Y+1/2,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=60
+SGNames=P n c a;Pnca
+Latt=P
+Centro=true
+Setting=3 
+SYMM=X,Y,Z;X+1/2,-Y+1/2,-Z+1/2;-X,Y+1/2,-Z+1/2;-X+1/2,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=60
+SGNames=P n a b;Pnab
+Latt=P
+Centro=true
+Setting=4 
+SYMM=X,Y,Z;X+1/2,-Y+1/2,-Z+1/2;-X+1/2,Y,-Z;-X,-Y+1/2,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=60
+SGNames=P b n a;Pbna
+Latt=P
+Centro=true
+Setting=5 
+SYMM=X,Y,Z;X,-Y+1/2,-Z;-X+1/2,Y+1/2,-Z+1/2;-X+1/2,-Y,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=60
+SGNames=P c n b;Pcnb
+Latt=P
+Centro=true
+Setting=6 
+SYMM=X,Y,Z;X+1/2,-Y,-Z+1/2;-X+1/2,Y+1/2,-Z+1/2;-X,-Y+1/2,Z
 --------------------------------------------------------------------------------
 SGNum=61
 SGNames=P b c a;Pbca
 Latt=P
 Centro=true
-SYMM=X,Y,Z;-X+1/2,-Y,Z+1/2;X+1/2,-Y+1/2,-Z;-X,Y+1/2,-Z+1/2
+Setting=1 
+SYMM=X,Y,Z;X+1/2,-Y+1/2,-Z;-X,Y+1/2,-Z+1/2;-X+1/2,-Y,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=61
+SGNames=P c a b;Pcab
+Latt=P
+Centro=true
+Setting=2 
+SYMM=X,Y,Z;X+1/2,-Y,-Z+1/2;-X+1/2,Y+1/2,-Z;-X,-Y+1/2,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=61
+SGNames=P b c a;Pbca
+Latt=P
+Centro=true
+Setting=3 
+SYMM=X,Y,Z;X+1/2,-Y+1/2,-Z;-X,Y+1/2,-Z+1/2;-X+1/2,-Y,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=61
+SGNames=P c a b;Pcab
+Latt=P
+Centro=true
+Setting=4 
+SYMM=X,Y,Z;X+1/2,-Y,-Z+1/2;-X+1/2,Y+1/2,-Z;-X,-Y+1/2,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=61
+SGNames=P b c a;Pbca
+Latt=P
+Centro=true
+Setting=5 
+SYMM=X,Y,Z;X+1/2,-Y+1/2,-Z;-X,Y+1/2,-Z+1/2;-X+1/2,-Y,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=61
+SGNames=P c a b;Pcab
+Latt=P
+Centro=true
+Setting=6 
+SYMM=X,Y,Z;X+1/2,-Y,-Z+1/2;-X+1/2,Y+1/2,-Z;-X,-Y+1/2,Z+1/2
 --------------------------------------------------------------------------------
 SGNum=62
 SGNames=P n m a;Pnma
 Latt=P
 Centro=true
-SYMM=X,Y,Z;-X+1/2,-Y,Z+1/2;X+1/2,-Y+1/2,-Z+1/2;-X,Y+1/2,-Z
+Setting=1 
+SYMM=X,Y,Z;X+1/2,-Y+1/2,-Z+1/2;-X,Y+1/2,-Z;-X+1/2,-Y,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=62
+SGNames=P m n b;Pmnb
+Latt=P
+Centro=true
+Setting=2 
+SYMM=X,Y,Z;X+1/2,-Y,-Z;-X+1/2,Y+1/2,-Z+1/2;-X,-Y+1/2,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=62
+SGNames=P b n m;Pbnm
+Latt=P
+Centro=true
+Setting=3 
+SYMM=X,Y,Z;X+1/2,-Y+1/2,-Z;-X+1/2,Y+1/2,-Z+1/2;-X,-Y,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=62
+SGNames=P c m n;Pcmn
+Latt=P
+Centro=true
+Setting=4 
+SYMM=X,Y,Z;X+1/2,-Y,-Z+1/2;-X,Y+1/2,-Z;-X+1/2,-Y+1/2,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=62
+SGNames=P m c n;Pmcn
+Latt=P
+Centro=true
+Setting=5 
+SYMM=X,Y,Z;X+1/2,-Y,-Z;-X,Y+1/2,-Z+1/2;-X+1/2,-Y+1/2,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=62
+SGNames=P n a m;Pnam
+Latt=P
+Centro=true
+Setting=6 
+SYMM=X,Y,Z;X+1/2,-Y+1/2,-Z+1/2;-X+1/2,Y+1/2,-Z;-X,-Y,Z+1/2
 --------------------------------------------------------------------------------
 SGNum=63
 SGNames=C m c m;Cmcm
 Latt=C
 Centro=true
-SYMM=X,Y,Z;-X,-Y,Z+1/2;X,-Y,-Z;-X,Y,-Z+1/2
+Setting=1 
+SYMM=X,Y,Z;X,-Y,-Z;-X,Y,-Z+1/2;-X,-Y,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=63
+SGNames=C c m m;Ccmm
+Latt=C
+Centro=true
+Setting=2 
+SYMM=X,Y,Z;X,-Y,-Z+1/2;-X,Y,-Z;-X,-Y,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=63
+SGNames=A m m a;Amma
+Latt=A
+Centro=true
+Setting=3 
+SYMM=X,Y,Z;X+1/2,-Y,-Z;-X,Y,-Z;-X+1/2,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=63
+SGNames=A m a m;Amam
+Latt=A
+Centro=true
+Setting=4 
+SYMM=X,Y,Z;X+1/2,-Y,-Z;-X+1/2,Y,-Z;-X,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=63
+SGNames=B b m m;Bbmm
+Latt=B
+Centro=true
+Setting=5 
+SYMM=X,Y,Z;X,-Y+1/2,-Z;-X,Y+1/2,-Z;-X,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=63
+SGNames=B m m b;Bmmb
+Latt=B
+Centro=true
+Setting=6 
+SYMM=X,Y,Z;X,-Y,-Z;-X,Y+1/2,-Z;-X,-Y+1/2,Z
 --------------------------------------------------------------------------------
 SGNum=64
 SGNames=C m c a;Cmca
 Latt=C
 Centro=true
-SYMM=X,Y,Z;-X,-Y+1/2,Z+1/2;X,-Y,-Z;-X,Y+1/2,-Z+1/2
+Setting=1 
+SYMM=X,Y,Z;X+1/2,-Y+1/2,-Z;-X+1/2,Y,-Z+1/2;-X,-Y+1/2,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=64
+SGNames=C c m b;Ccmb
+Latt=C
+Centro=true
+Setting=2 
+SYMM=X,Y,Z;X,-Y+1/2,-Z+1/2;-X+1/2,Y+1/2,-Z;-X+1/2,-Y,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=64
+SGNames=A b m a;Abma
+Latt=A
+Centro=true
+Setting=3 
+SYMM=X,Y,Z;X+1/2,-Y,-Z+1/2;-X,Y+1/2,-Z+1/2;-X+1/2,-Y+1/2,Z
+--------------------------------------------------------------------------------
+SGNum=64
+SGNames=A c a m;Acam
+Latt=A
+Centro=true
+Setting=4 
+SYMM=X,Y,Z;X+1/2,-Y+1/2,-Z;-X+1/2,Y,-Z+1/2;-X,-Y+1/2,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=64
+SGNames=B b c m;Bbcm
+Latt=B
+Centro=true
+Setting=5 
+SYMM=X,Y,Z;X,-Y+1/2,-Z+1/2;-X+1/2,Y+1/2,-Z;-X+1/2,-Y,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=64
+SGNames=B m a b;Bmab
+Latt=B
+Centro=true
+Setting=6 
+SYMM=X,Y,Z;X+1/2,-Y,-Z+1/2;-X,Y+1/2,-Z+1/2;-X+1/2,-Y+1/2,Z
 --------------------------------------------------------------------------------
 SGNum=65
 SGNames=C m m m;Cmmm
 Latt=C
 Centro=true
-SYMM=X,Y,Z;-X,-Y,Z;X,-Y,-Z;-X,Y,-Z
+Setting=1 2 
+SYMM=X,Y,Z;X,-Y,-Z;-X,Y,-Z;-X,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=65
+SGNames=A m m m;Ammm
+Latt=A
+Centro=true
+Setting=3 4 
+SYMM=X,Y,Z;X,-Y,-Z;-X,Y,-Z;-X,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=65
+SGNames=B m m m;Bmmm
+Latt=B
+Centro=true
+Setting=5 6 
+SYMM=X,Y,Z;X,-Y,-Z;-X,Y,-Z;-X,-Y,Z
 --------------------------------------------------------------------------------
 SGNum=66
 SGNames=C c c m;Cccm
 Latt=C
 Centro=true
-SYMM=X,Y,Z;-X,-Y,Z;X,-Y,-Z+1/2;-X,Y,-Z+1/2
+Setting=1 2 
+SYMM=X,Y,Z;X,-Y,-Z+1/2;-X,Y,-Z+1/2;-X,-Y,Z
 --------------------------------------------------------------------------------
+SGNum=66
+SGNames=A m a a;Amaa
+Latt=A
+Centro=true
+Setting=3 4 
+SYMM=X,Y,Z;X,-Y,-Z;-X+1/2,Y,-Z;-X+1/2,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=0
+SGNames=unknown;unknown
+Latt=u
+Centro=false
+Setting=5 6 
+SYMM=--------------------------------------------------------------------------------
 SGNum=67
 SGNames=C m m a;Cmma
 Latt=C
 Centro=true
-SYMM=X,Y,Z;-X,-Y+1/2,Z;X,-Y,-Z;-X,Y+1/2,-Z
+Setting=1 
+SYMM=X,Y,Z;X+1/2,-Y+1/2,-Z;-X+1/2,Y,-Z;-X,-Y+1/2,Z
+--------------------------------------------------------------------------------
+SGNum=67
+SGNames=C m m b;Cmmb
+Latt=C
+Centro=true
+Setting=2 
+SYMM=X,Y,Z;X,-Y+1/2,-Z;-X+1/2,Y+1/2,-Z;-X+1/2,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=67
+SGNames=A b m m;Abmm
+Latt=A
+Centro=true
+Setting=3 
+SYMM=X,Y,Z;X,-Y,-Z+1/2;-X,Y+1/2,-Z+1/2;-X,-Y+1/2,Z
+--------------------------------------------------------------------------------
+SGNum=67
+SGNames=A c m m;Acmm
+Latt=A
+Centro=true
+Setting=4 
+SYMM=X,Y,Z;X,-Y+1/2,-Z;-X,Y,-Z+1/2;-X,-Y+1/2,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=67
+SGNames=B m c m;Bmcm
+Latt=B
+Centro=true
+Setting=5 
+SYMM=X,Y,Z;X,-Y,-Z+1/2;-X+1/2,Y,-Z;-X+1/2,-Y,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=67
+SGNames=B m a m;Bmam
+Latt=B
+Centro=true
+Setting=6 
+SYMM=X,Y,Z;X+1/2,-Y,-Z+1/2;-X,Y,-Z+1/2;-X+1/2,-Y,Z
 --------------------------------------------------------------------------------
 SGNum=68
 SGNames=C c c a;Ccca
 Latt=C
 Centro=true
-SYMM=X,Y,Z;-X,-Y,Z;X,-Y,-Z;-X,Y,-Z
+Setting=1 
+SYMM=X,Y,Z;X+1/2,-Y,-Z+1/2;-X,Y,-Z+1/2;-X+1/2,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=68
+SGNames=C c c b;Cccb
+Latt=C
+Centro=true
+Setting=2 
+SYMM=X,Y,Z;X,-Y,-Z+1/2;-X,Y+1/2,-Z+1/2;-X,-Y+1/2,Z
+--------------------------------------------------------------------------------
+SGNum=68
+SGNames=A b a a;Abaa
+Latt=A
+Centro=true
+Setting=3 
+SYMM=X,Y,Z;X,-Y+1/2,-Z;-X+1/2,Y+1/2,-Z;-X+1/2,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=68
+SGNames=A c a a;Acaa
+Latt=A
+Centro=true
+Setting=4 
+SYMM=X,Y,Z;X,-Y,-Z+1/2;-X+1/2,Y,-Z;-X+1/2,-Y,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=68
+SGNames=B b c b;Bbcb
+Latt=B
+Centro=true
+Setting=5 
+SYMM=X,Y,Z;X,-Y+1/2,-Z;-X,Y,-Z+1/2;-X,-Y+1/2,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=68
+SGNames=B b a b;Bbab
+Latt=B
+Centro=true
+Setting=6 
+SYMM=X,Y,Z;X+1/2,-Y+1/2,-Z;-X+1/2,Y,-Z;-X,-Y+1/2,Z
 --------------------------------------------------------------------------------
 SGNum=69
 SGNames=F m m m;Fmmm
 Latt=F
 Centro=true
-SYMM=X,Y,Z;-X,-Y,Z;X,-Y,-Z;-X,Y,-Z
+Setting=1 2 3 4 5 6 
+SYMM=X,Y,Z;X,-Y,-Z;-X,Y,-Z;-X,-Y,Z
 --------------------------------------------------------------------------------
 SGNum=70
 SGNames=F d d d;Fddd
 Latt=F
 Centro=true
-SYMM=X,Y,Z;-X,-Y,Z;X,-Y,-Z;-X,Y,-Z
+Setting=1 2 3 4 5 6 
+SYMM=X,Y,Z;X,-Y+1/4,-Z+1/4;-X+1/4,Y,-Z+1/4;-X+1/4,-Y+1/4,Z
 --------------------------------------------------------------------------------
 SGNum=71
 SGNames=I m m m;Immm
 Latt=I
 Centro=true
-SYMM=X,Y,Z;-X,-Y,Z;X,-Y,-Z;-X,Y,-Z
+Setting=1 2 3 4 5 6 
+SYMM=X,Y,Z;X,-Y,-Z;-X,Y,-Z;-X,-Y,Z
 --------------------------------------------------------------------------------
 SGNum=72
 SGNames=I b a m;Ibam
 Latt=I
 Centro=true
-SYMM=X,Y,Z;-X,-Y,Z;X,-Y,-Z+1/2;-X,Y,-Z+1/2
+Setting=1 2 
+SYMM=X,Y,Z;X+1/2,-Y+1/2,-Z;-X+1/2,Y+1/2,-Z;-X,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=72
+SGNames=I m c b;Imcb
+Latt=I
+Centro=true
+Setting=3 4 
+SYMM=X,Y,Z;X,-Y,-Z;-X,Y+1/2,-Z+1/2;-X,-Y+1/2,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=72
+SGNames=I c m a;Icma
+Latt=I
+Centro=true
+Setting=5 6 
+SYMM=X,Y,Z;X+1/2,-Y,-Z+1/2;-X,Y,-Z;-X+1/2,-Y,Z+1/2
 --------------------------------------------------------------------------------
 SGNum=73
 SGNames=I b c a;Ibca
 Latt=I
 Centro=true
-SYMM=X,Y,Z;-X,-Y+1/2,Z;X,-Y,-Z+1/2;-X,Y+1/2,-Z+1/2
+Setting=1 
+SYMM=X,Y,Z;X+1/2,-Y+1/2,-Z;-X,Y+1/2,-Z+1/2;-X+1/2,-Y,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=73
+SGNames=I c a b;Icab
+Latt=I
+Centro=true
+Setting=2 
+SYMM=X,Y,Z;X+1/2,-Y,-Z+1/2;-X+1/2,Y+1/2,-Z;-X,-Y+1/2,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=73
+SGNames=I b c a;Ibca
+Latt=I
+Centro=true
+Setting=3 
+SYMM=X,Y,Z;X+1/2,-Y+1/2,-Z;-X,Y+1/2,-Z+1/2;-X+1/2,-Y,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=73
+SGNames=I c a b;Icab
+Latt=I
+Centro=true
+Setting=4 
+SYMM=X,Y,Z;X+1/2,-Y,-Z+1/2;-X+1/2,Y+1/2,-Z;-X,-Y+1/2,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=73
+SGNames=I b c a;Ibca
+Latt=I
+Centro=true
+Setting=5 
+SYMM=X,Y,Z;X+1/2,-Y+1/2,-Z;-X,Y+1/2,-Z+1/2;-X+1/2,-Y,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=73
+SGNames=I c a b;Icab
+Latt=I
+Centro=true
+Setting=6 
+SYMM=X,Y,Z;X+1/2,-Y,-Z+1/2;-X+1/2,Y+1/2,-Z;-X,-Y+1/2,Z+1/2
 --------------------------------------------------------------------------------
 SGNum=74
 SGNames=I m m a;Imma
 Latt=I
 Centro=true
-SYMM=X,Y,Z;-X,-Y+1/2,Z;X,-Y,-Z;-X,Y+1/2,-Z
+Setting=1 
+SYMM=X,Y,Z;X+1/2,-Y+1/2,-Z+1/2;-X+1/2,Y,-Z+1/2;-X,-Y+1/2,Z
+--------------------------------------------------------------------------------
+SGNum=74
+SGNames=I m m b;Immb
+Latt=I
+Centro=true
+Setting=2 
+SYMM=X,Y,Z;X,-Y+1/2,-Z+1/2;-X+1/2,Y+1/2,-Z+1/2;-X+1/2,-Y,Z
+--------------------------------------------------------------------------------
+SGNum=74
+SGNames=I b m m;Ibmm
+Latt=I
+Centro=true
+Setting=3 
+SYMM=X,Y,Z;X,-Y,-Z+1/2;-X+1/2,Y+1/2,-Z+1/2;-X+1/2,-Y+1/2,Z
+--------------------------------------------------------------------------------
+SGNum=74
+SGNames=I c m m;Icmm
+Latt=I
+Centro=true
+Setting=4 
+SYMM=X,Y,Z;X,-Y+1/2,-Z;-X+1/2,Y,-Z+1/2;-X+1/2,-Y+1/2,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=74
+SGNames=I m c m;Imcm
+Latt=I
+Centro=true
+Setting=5 
+SYMM=X,Y,Z;X,-Y+1/2,-Z+1/2;-X+1/2,Y,-Z;-X+1/2,-Y+1/2,Z+1/2
+--------------------------------------------------------------------------------
+SGNum=74
+SGNames=I m a m;Imam
+Latt=I
+Centro=true
+Setting=6 
+SYMM=X,Y,Z;X+1/2,-Y+1/2,-Z+1/2;-X,Y,-Z+1/2;-X+1/2,-Y+1/2,Z
 --------------------------------------------------------------------------------
 SGNum=75
 SGNames=P 4;P4
@@ -1360,7 +3692,7 @@ SGNum=227
 SGNames=F d -3 m;Fd-3m
 Latt=F
 Centro=true
-SYMM=X,Y,Z;-Y+1/4,X+1/4,Z+1/4;X,-Y,-Z;Z,X,Y;-X,-Y,Z;Y+1/4,X+1/4,-Z+1/4;-X+1/4,Z+1/4,Y+1/4;Z,-X,-Y;Y,Z,X;Y+1/4,-X+1/4,Z+1/4;-X,Y,-Z;-Z,-X,Y;X+1/4,Z+1/4,-Y+1/4;-Z+1/4,Y+1/4,X+1/4;-X+1/4,-Z+1/4,-Y+1/4;Y,-Z,-X;-Y,Z,-X;-Y+1/4,-X+1/4,-Z+1/4;X+1/4,-Z+1/4,Y+1/4;-Z,X,-Y;-Y,-Z,X;Z+1/4,Y+1/4,-X+1/4;-Z+1/4,-Y+1/4,-X+1/4;Z+1/4,-Y+1/4,X+1/4
+SYMM=X,Y,Z;X,-Y+1/4,-Z+1/4;-X+1/4,Y,-Z+1/4;-X+1/4,-Y+1/4,Z;Y,Z,X;-Y+1/4,-Z+1/4,X;Y,-Z+1/4,-X+1/4;-Y+1/4,Z,-X+1/4;Z,X,Y;-Z+1/4,X,-Y+1/4;-Z+1/4,-X+1/4,Y;Z,-X+1/4,-Y+1/4;Y,X,Z;-Y+1/4,X,-Z+1/4;Y,-X+1/4,-Z+1/4;-Y+1/4,-X+1/4,Z;Z,Y,X;-Z+1/4,-Y+1/4,X;-Z+1/4,Y,-X+1/4;Z,-Y+1/4,-X+1/4;X,Z,Y;X,-Z+1/4,-Y+1/4;-X+1/4,-Z+1/4,Y;-X+1/4,Z,-Y+1/4
 --------------------------------------------------------------------------------
 SGNum=228
 SGNames=F d -3 c;Fd-3c

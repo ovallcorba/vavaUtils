@@ -3,8 +3,7 @@ package com.vava33.cellsymm;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
-
-import javax.swing.JOptionPane;
+import java.util.List;
 
 import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
@@ -14,7 +13,6 @@ import com.vava33.cellsymm.CellSymm_global.CrystalCentering;
 import com.vava33.cellsymm.CellSymm_global.CrystalFamily;
 import com.vava33.cellsymm.CellSymm_global.CrystalLaueGroup;
 import com.vava33.cellsymm.CellSymm_global.CrystalSystem;
-import com.vava33.jutils.FileUtils;
 import com.vava33.jutils.VavaLogger;
 
 
@@ -24,18 +22,25 @@ public class SpaceGroup {
     private static VavaLogger log = CellSymm_global.getVavaLogger(className);    
     
     private int SGnum;
-    private ArrayList<String> SGnames;
-    private ArrayList<RealMatrix> symMat; //matrius grup espacial augmentades, es a dir 4x4 amb traslació inclosa
+    private List<String> SGnames;
+    private List<RealMatrix> symMat; //matrius grup espacial augmentades, es a dir 4x4 amb traslació inclosa
     private boolean centro;
     private CrystalFamily crystalFamily;
-    private CrystalSystem crystalSystem;
     private CrystalCentering crystalCentering; //xarxa
+    @SuppressWarnings("unused")
+    private CrystalSystem crystalSystem;
+    @SuppressWarnings("unused")
     private CrystalLaueGroup crystalLaue;
-
+    @SuppressWarnings("unused")
+    private int[] setting;
+    @SuppressWarnings("unused")
+    private int cellChoice;
+    
     
     //Names as string separated by semi colons ";"
     //matrices as string separated by semicolons ;
-    public SpaceGroup(int SGnum, String names, String matrices, boolean centro) {
+    
+    public SpaceGroup(int SGnum, String names, String matrices, boolean centro, int cellChoice, int[] setting) {
         this.SGnames = new ArrayList<String>(Arrays.asList(names.trim().split(";")));
         this.SGnum = SGnum;
         this.centro = centro;
@@ -46,11 +51,22 @@ public class SpaceGroup {
         }
         this.setCrystalFamily();
         this.setCentering();
+        this.cellChoice=cellChoice;
+        this.setting=setting;
+    }
+    
+    public SpaceGroup(int SGnum, String names, String matrices, boolean centro) {
+        this(SGnum,names,matrices,centro,1,new int[] {1}); //default choice/settings
+    }
+    
+    public SpaceGroup(int SGnum, String names, String matrices, boolean centro, char centering,int cellChoice, int[] setting) {
+        this(SGnum,names,matrices,centro,cellChoice,setting);
+        this.setCentering(centering);
     }
     
     public SpaceGroup(int SGnum, String names, String matrices, boolean centro, char centering) {
         this(SGnum,names,matrices,centro);
-        this.setCentering(centering);
+        this.setCentering(centering);        
     }
     
     private void setCrystalFamily() {
@@ -66,6 +82,14 @@ public class SpaceGroup {
         return this.crystalFamily;
     }
     
+    public void setSettings(int...is) {
+        this.setting=is;
+    }
+    public void setCellChoice(int cellchoice) {
+        this.cellChoice=cellchoice;
+    }
+    
+    @SuppressWarnings("unused")
     private void setCrystalSystem() {
         if (this.SGnum<3) this.crystalSystem=CrystalSystem.TRIC;
         if (this.SGnum>2 && this.SGnum<16) this.crystalSystem=CrystalSystem.MONO;
@@ -106,6 +130,7 @@ public class SpaceGroup {
         }
     }
     
+    @SuppressWarnings("unused")
     private void setCrystalLaue() {
         if (this.SGnum<3) this.crystalLaue=CrystalLaueGroup.L1;
         if (this.SGnum>2 && this.SGnum<16) this.crystalLaue=CrystalLaueGroup.L2;
@@ -136,6 +161,19 @@ public class SpaceGroup {
         return false;
     }
     
+    public boolean isThisSGnoCentering(String sgname) {
+        Iterator<String> itrS = this.SGnames.iterator();
+        while (itrS.hasNext()) {
+            String name = itrS.next();
+            if (name.trim().substring(1).equalsIgnoreCase(sgname.trim().substring(1))) return true;
+        }
+        return false;
+    }
+    
+    public String getName() {
+        return SGnames.get(0);
+    }
+    
     //converteix matrius text x,y,z ... a array floats
     // --> originalment eren 12 numeros per matriu així:1  0  0   0  1  0   0  0  1  0.00000  0.00000  0.00000 
     // on 
@@ -147,14 +185,14 @@ public class SpaceGroup {
     // index a float[]: 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15
     //                 xx xy xz tx yx yy yz ty zx zy zz tz  0  0  0  1
     public RealMatrix createSymmMat(String matrixXYZtxt) {
-        String[] xyz = matrixXYZtxt.split(",");
+        String[] xyz = matrixXYZtxt.trim().split(",");
         //matrix a zero
         double[] matrix = new double[16]; //4x4
         for (int k=0;k<matrix.length;k++) {
             matrix[k]=0;
         }
         //les x
-        char[] ch = xyz[0].toCharArray();
+        char[] ch = xyz[0].trim().toCharArray();
         boolean neg = false;
         boolean denominador = false;
         float trans = 0;
@@ -203,7 +241,7 @@ public class SpaceGroup {
             matrix[3] = trans;
         }
         //les y
-        ch = xyz[1].toCharArray();
+        ch = xyz[1].trim().toCharArray();
         neg = false;
         denominador = false;
         trans = 0;
@@ -253,7 +291,7 @@ public class SpaceGroup {
         }
         
         //les z
-        ch = xyz[2].toCharArray();
+        ch = xyz[2].trim().toCharArray();
         neg = false;
         denominador = false;
         trans = 0;
@@ -306,18 +344,18 @@ public class SpaceGroup {
         }
 
         
-        log.debug(Arrays.toString(matrix));
+        log.fine(Arrays.toString(matrix));
         RealMatrix rm = MatrixUtils.createRealMatrix(4, 4);
         rm.setRow(0, Arrays.copyOfRange(matrix, 0, 4)); //rang inclusive-exclusive, es a dir, de n a (n-1)
         rm.setRow(1, Arrays.copyOfRange(matrix, 4, 8));
         rm.setRow(2, Arrays.copyOfRange(matrix, 8, 12));
         rm.setRow(3, Arrays.copyOfRange(matrix, 12, 16));
-        log.debug(rm.toString());
+        log.fine(rm.toString());
         return rm;
     }
     
-    public ArrayList<RealMatrix> symmat(String[] matrius){
-        ArrayList<RealMatrix> matrix_arraylist = new ArrayList<RealMatrix>(); 
+    public List<RealMatrix> symmat(String[] matrius){
+        List<RealMatrix> matrix_arraylist = new ArrayList<RealMatrix>(); 
         for (int i=0;i<matrius.length;i++) {
             matrix_arraylist.add(createSymmMat(matrius[i]));
         }
@@ -336,9 +374,9 @@ public class SpaceGroup {
             while (itrM.hasNext()) {
                 RealMatrix rm = itrM.next();
                 RealMatrix res = hkl1.multiply(rm);
-                double ihr = res.getEntry(0, 0);
-                double ikr = res.getEntry(0, 1);
-                double ilr = res.getEntry(0, 2);
+                int ihr = (int) res.getEntry(0, 0);
+                int ikr = (int) res.getEntry(0, 1);
+                int ilr = (int) res.getEntry(0, 2);
                 double tr = res.getEntry(0, 3);
                 int ips = (int) ((360*sign*tr)%360);
                 if ((h==(sign*ihr))&&(k==(sign*ikr))&&(l==(sign*ilr))&&(ips!=0))return false;
@@ -349,10 +387,10 @@ public class SpaceGroup {
     
     //apply symmetry matrices and return related atom list
     //CENTROSYMMETRY IS INCLUDED IF SG IS CENTROSYMMETRIC
-    public ArrayList<Atom> getSymmetryRelatedPos(Atom at0,boolean putInUnitCell){
-        ArrayList<Atom> ats = new ArrayList<Atom>();
+    public List<Atom> getSymmetryRelatedPos(Atom at0,boolean putInUnitCell){
+        List<Atom> ats = new ArrayList<Atom>();
         
-        ArrayList<RealMatrix>  allMatrix = this.getAllMatricesIncludingCentro();
+        List<RealMatrix>  allMatrix = this.getAllMatricesIncludingCentro();
         
         for (RealMatrix sym: allMatrix) {
             RealMatrix newCoords = sym.multiply(at0.getCoordsAsExtended4rowMatrix());
@@ -374,8 +412,8 @@ public class SpaceGroup {
         return ats;
     }
     
-    public ArrayList<Atom> getLattTransRelatedPos(Atom at0,boolean putInUnitCell){
-        ArrayList<Atom> ats = new ArrayList<Atom>();
+    public List<Atom> getLattTransRelatedPos(Atom at0,boolean putInUnitCell){
+        List<Atom> ats = new ArrayList<Atom>();
         RealMatrix AtCoords = at0.getCoordsAs3rowMatrix();
         for (RealMatrix trans:this.crystalCentering.getTranslationsAsColumnMatrices()) {
             double[] coords = trans.add(AtCoords).getColumn(0);
@@ -392,11 +430,11 @@ public class SpaceGroup {
         return ats;
     }
     
-    private ArrayList<RealMatrix> getAllMatricesIncludingCentro() {
+    private List<RealMatrix> getAllMatricesIncludingCentro() {
         if (!this.centro) return this.symMat;
         
         //duplicar el nombre de matrius canviant el signe nomes a la part no traslacional (la no extesa).
-        ArrayList<RealMatrix> allMatrix = new ArrayList<RealMatrix>();
+        List<RealMatrix> allMatrix = new ArrayList<RealMatrix>();
         allMatrix.addAll(this.symMat);
         for (RealMatrix m:this.symMat) {
             RealMatrix neg = m.copy();
@@ -415,20 +453,32 @@ public class SpaceGroup {
     }
     
     public int calcMultiplicityReflection(HKLrefl hkl) {
-        return this.calcMultiplicityReflection(hkl.h,hkl.k,hkl.l);
+        return this.getEquivalentReflections(hkl).size()*2;
     }
     
-    public int calcMultiplicityReflection(int h, int k, int l) {
-        //TODO
-        return 2;
+    //just in case we want to print all the equivalents we return an arraylist, podriem posar-lo també dins HKLrefl pero de moment no ho faig
+    public List<HKLrefl> getEquivalentReflections(HKLrefl hkl) {
+        List<HKLrefl> eqRefl = new ArrayList<HKLrefl>();
+        for(RealMatrix mat:this.symMat) {
+            double[] newhkl = mat.getSubMatrix(0, 2, 0, 2).multiply(hkl.getAsColumnMatrixDim3()).getColumn(0); 
+            boolean hasEquivalent = false;
+            for (HKLrefl ref:eqRefl) {
+                if (ref.isEquivalent((int)newhkl[0], (int)newhkl[1], (int)newhkl[2]))hasEquivalent=true;
+            }
+            if (hasEquivalent) continue;
+            //si arribem aqui l'afegim
+            eqRefl.add(new HKLrefl((int)newhkl[0], (int)newhkl[1], (int)newhkl[2],hkl.dsp));
+        }
+        return eqRefl;
     }
     
     public int getsgNum() {
         return this.SGnum;
     }
-
     
-
-
+    @Override
+    public String toString() {
+        return this.SGnames.get(0);
+    }
     
 }
