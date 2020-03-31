@@ -9,15 +9,14 @@ import java.io.File;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.TreeMap;
-
+import java.util.LinkedHashMap;
 
 public class Options {
 
     private Map<String,String> options;
     
-    public Options() {    
-        options = new TreeMap<String,String>(String.CASE_INSENSITIVE_ORDER);
+    public Options() {
+        options = new LinkedHashMap<String,String>();
     }
 
     public String getValue(String key) {
@@ -31,11 +30,8 @@ public class Options {
           while (scParFile.hasNextLine()){
               String line = scParFile.nextLine();
               if (line.trim().startsWith("#"))continue;
-              int iigual=line.indexOf("=")+1;
-              if (iigual<=0)continue;
-              String key = line.substring(0, iigual-1).trim();
-              String value = line.substring(iigual, line.trim().length()).trim();
-              options.put(key, value);
+              String[] keyValue = this.getKeyAndValue(line, '=');
+              if (keyValue!=null)options.put(keyValue[0], keyValue[1]);
           }
       }catch(Exception e){
           e.printStackTrace();
@@ -54,6 +50,42 @@ public class Options {
     
     public void writeOptions(File confFile) {
         //TODO
+    }
+    
+    public String getOptionsAsString(char separator) {
+        StringBuilder sb = new StringBuilder();
+        for (String key:options.keySet()) {
+            sb.append(key);
+            sb.append(separator);
+            sb.append(options.get(key));
+            sb.append(FileUtils.lineSeparator);
+        }
+        return sb.toString();
+    }
+    
+    public void readOptionsFromString(String opts) {
+      Scanner scParFile = null;
+      try {
+          scParFile = new Scanner(opts);
+          while (scParFile.hasNextLine()){
+              String line = scParFile.nextLine();
+              if (line.trim().startsWith("#"))continue;
+              String[] keyValue = this.getKeyAndValue(line, '=');
+              if (keyValue!=null)options.put(keyValue[0], keyValue[1]);
+          }
+      }catch(Exception e){
+          e.printStackTrace();
+      }finally {
+          if (scParFile!=null)scParFile.close();          
+      }
+    }
+    
+    private String[] getKeyAndValue(String line, char separator) {
+        int iigual=line.indexOf(separator)+1;
+        if (iigual<=0)return null;
+        String key = line.substring(0, iigual-1).trim();
+        String value = line.substring(iigual, line.trim().length()).trim();
+        return new String[] {key,value};
     }
  
     public boolean getValAsBoolean(String key, boolean def) {
