@@ -5,6 +5,7 @@ package com.vava33.jutils;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -33,7 +34,7 @@ public class Cif_file {
     private float a,b,c,al,be,ga;
     private String sgString;
     private int sgNum = 0;
-    private ArrayList<Atom> atoms;
+    private List<Atom> atoms;
     
     public Cif_file(String ciffile, boolean ReviewReadedDataDialog) {
         boolean ok = readCIF(new File(ciffile),ReviewReadedDataDialog);
@@ -89,7 +90,6 @@ public class Cif_file {
                 
                 if(FileUtils.startsWithIgnoreCase(line.trim(), "_cell_length_a")){
                     String[] linia= line.split("\\s+|\\t");
-//                    a=Float.parseFloat(removeBrk(linia[1].trim()));
                     this.setA(Float.parseFloat(FileUtils.removeBrk(linia[1].trim())));
                 }
                 
@@ -184,7 +184,6 @@ public class Cif_file {
                             break;
                         }
                     }
-                    
                     
                     
                     //ja hem arribat als atoms i sabem les posicions (atencio:tenim la 1a linia llegida ja!)
@@ -379,14 +378,14 @@ public class Cif_file {
     /**
      * @return the atoms
      */
-    public ArrayList<Atom> getAtoms() {
+    public List<Atom> getAtoms() {
         return atoms;
     }
 
     /**
      * @param atoms the atoms to set
      */
-    public void setAtoms(ArrayList<Atom> atoms) {
+    public void setAtoms(List<Atom> atoms) {
         this.atoms = atoms;
     }
     

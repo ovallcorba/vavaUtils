@@ -13,10 +13,13 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.URI;
+import java.nio.charset.Charset;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 import java.util.Random;
 import java.util.Scanner;
@@ -89,11 +92,16 @@ public final class FileUtils {
     private static String os = "win";
 
     /** The separator character. */
-    private static String separator = System.getProperty("file.separator");
-
+    public static final String fileSeparator = System.getProperty("file.separator");
+    public static final String lineSeparator = System.getProperty("line.separator");
+    public static final String userDir = System.getProperty("user.dir");
+    
     /** time stamps **/
     public static SimpleDateFormat fHora = new SimpleDateFormat("[HH:mm]");
     public static final SimpleDateFormat fDiaHora = new SimpleDateFormat("[yyyy-MM-dd 'at' HH:mm]");
+    
+    private static String[] charsets = {"","UTF-8","ISO8859-1","Windows-1251","Shift JIS","Windows-1252"};
+
     
     // M�tode que afegeix un car�cter enmig d'un CharArray
     /**
@@ -695,15 +703,6 @@ public final class FileUtils {
     }
 
     /**
-     * Gets the separator.
-     *
-     * @return the separator
-     */
-    public static String getSeparator() {
-        return FileUtils.separator;
-    }
-
-    /**
      * Moure fitxer.
      *
      * @param fitxerOrigen the fitxer origen
@@ -915,6 +914,19 @@ public final class FileUtils {
         return array;
     }
     
+    public static double[] xFloatStringArrayToDoubleArray(String[] sdoubles) {
+    	double[] doubles = new double[sdoubles.length];
+    	int i=0;
+    	try {
+        	for(String sd: sdoubles) {
+        		doubles[i]=Double.parseDouble(sd);
+        	}
+    	}catch(NumberFormatException ex) {
+    		throw(ex);
+    	}
+    	return doubles;
+    }
+    
     /**
      * Green implementation of regionMatches.
      *
@@ -987,10 +999,9 @@ public final class FileUtils {
 
     public static double round(double d, int decimalPlace) {
         BigDecimal bd = new BigDecimal(Double.toString(d));
-        bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_UP);
+        bd = bd.setScale(decimalPlace, RoundingMode.HALF_UP);
         return bd.doubleValue();
     }
-    
     
     public static void openURL(String url) {
 
@@ -1034,26 +1045,67 @@ public final class FileUtils {
     }
     
     public static Color parseColorName(String name){
-        if (FileUtils.containsIgnoreCase(name, "black")) return Color.black;
-        if (FileUtils.containsIgnoreCase(name, "green")) return Color.green;
-        if (FileUtils.containsIgnoreCase(name, "red")) return Color.red;
-        if (FileUtils.containsIgnoreCase(name, "cyan")) return Color.cyan;
-        if (FileUtils.containsIgnoreCase(name, "yellow")) return Color.yellow;
-        if (FileUtils.containsIgnoreCase(name, "magenta")) return Color.magenta;
-        if (FileUtils.containsIgnoreCase(name, "orange")) return Color.orange;
-        if (FileUtils.containsIgnoreCase(name, "pink")) return Color.pink;
-        if (FileUtils.containsIgnoreCase(name, "blue")) return Color.blue;
-        if (FileUtils.containsIgnoreCase(name, "white")) return Color.white;
-        try {
-            return Color.decode(name);
-        }catch(Exception ex) {
-            //do nothing
+        name = name.toLowerCase();
+        if (FileUtils.containsIgnoreCase(name, "darker1")) {
+            return parseColorName(name.replace("darker1", ""),1,0);
         }
-        return null;
+        if (FileUtils.containsIgnoreCase(name, "darker2")) {
+            return parseColorName(name.replace("darker2", ""),2,0);
+        }
+        if (FileUtils.containsIgnoreCase(name, "darker3")) {
+            return parseColorName(name.replace("darker3", ""),3,0);
+        }
+
+        if (FileUtils.containsIgnoreCase(name, "brighter1")) {
+            return parseColorName(name.replace("brighter1", ""),0,1);
+        }
+        if (FileUtils.containsIgnoreCase(name, "brighter2")) {
+            return parseColorName(name.replace("brighter2", ""),0,2);
+        }
+        if (FileUtils.containsIgnoreCase(name, "brighter3")) {
+            return parseColorName(name.replace("brighter3", ""),0,3);
+        }
+
+        return parseColorName(name,0,0);
     }
+    
+    private static Color parseColorName(String name,int nDarkers,int nBrighters){
+        Color c = null;
+        if (name.trim().equalsIgnoreCase("black")) c=Color.black;
+        if (name.trim().equalsIgnoreCase("blue")) c= Color.blue;
+        if (name.trim().equalsIgnoreCase("red")) c= Color.red;
+        if (name.trim().equalsIgnoreCase("green")) c= Color.green;
+        if (name.trim().equalsIgnoreCase("cyan")) c= Color.cyan;
+        if (name.trim().equalsIgnoreCase("yellow")) c= Color.yellow;
+        if (name.trim().equalsIgnoreCase("magenta")) c= Color.magenta;
+        if (name.trim().equalsIgnoreCase("orange")) c= Color.orange;
+        if (name.trim().equalsIgnoreCase("pink")) c= Color.pink;
+        if (name.trim().equalsIgnoreCase("white")) c= Color.white;
+        if (name.trim().equalsIgnoreCase("gray")) c= Color.gray;
+        if (name.trim().equalsIgnoreCase("violet")) c= new Color(-6736897);
+        if (c==null) {
+            try {
+                c= Color.decode(name);
+            }catch(Exception ex) {
+                //do nothing
+            }
+        }
+        if (c!=null) {
+            for (int i=0;i<nDarkers;i++) {
+                c=c.darker();
+            }
+            for (int i=0;i<nBrighters;i++) {
+                c=c.brighter();
+            }
+        }
+        if (c!=null)return c;
+        return Color.black;
+    }
+    
     
     public static String getColorName(Color c){
         if (c==Color.black) return "black";
+        if (c==Color.white) return "white";
         if (c==Color.green) return "green";
         if (c==Color.red) return "red";
         if (c==Color.cyan) return "cyan";
@@ -1062,7 +1114,35 @@ public final class FileUtils {
         if (c==Color.orange) return "orange";
         if (c==Color.pink) return "pink";
         if (c==Color.blue) return "blue";
-        if (c==Color.white) return "white";
+        if (c.getRGB()==-6736897) return "violet";
+
+        if (c==Color.green.darker()) return "greenDarker1";
+        if (c==Color.red.darker()) return "redDarker1";
+        if (c==Color.cyan.darker()) return "cyanDarker1";
+        if (c==Color.yellow.darker()) return "yellowDarker1";
+        if (c==Color.magenta.darker()) return "magentaDarker1";
+        if (c==Color.orange.darker()) return "orangeDarker1";
+        if (c==Color.pink.darker()) return "pinkDarker1";
+        if (c==Color.blue.darker()) return "blueDarker1";
+        
+        if (c==Color.green.darker().darker()) return "greenDarker2";
+        if (c==Color.red.darker().darker()) return "redDarker2";
+        if (c==Color.cyan.darker().darker()) return "cyanDarker2";
+        if (c==Color.yellow.darker().darker()) return "yellowDarker2";
+        if (c==Color.magenta.darker().darker()) return "magentaDarker2";
+        if (c==Color.orange.darker().darker()) return "orangeDarker2";
+        if (c==Color.pink.darker().darker()) return "pinkDarker2";
+        if (c==Color.blue.darker().darker()) return "blueDarker2";
+        
+        if (c==Color.green.darker().darker().darker()) return "greenDarker3";
+        if (c==Color.red.darker().darker().darker()) return "redDarker3";
+        if (c==Color.cyan.darker().darker().darker()) return "cyanDarker3";
+        if (c==Color.yellow.darker().darker().darker()) return "yellowDarker3";
+        if (c==Color.magenta.darker().darker().darker()) return "magentaDarker3";
+        if (c==Color.orange.darker().darker().darker()) return "orangeDarker3";
+        if (c==Color.pink.darker().darker().darker()) return "pinkDarker3";
+        if (c==Color.blue.darker().darker().darker()) return "blueDarker3";
+        
         return Integer.toString(c.getRGB());
     }
     
@@ -1080,6 +1160,33 @@ public final class FileUtils {
     }
     
     
+    public static String getEncodingToUse(File f) {
+      //FIRST CHECK ENCODING
+        Scanner sf=null;
+        charsets[0] = Charset.defaultCharset().name();
+        int charsetToUse = 0;
+        try {
+        	for (int i=0;i<charsets.length;i++) {
+        		sf = new Scanner(f,charsets[i]);
+        		if (sf.hasNextLine()) {
+        			charsetToUse=i;
+        			break;
+        		}
+        	}
+        } catch (Exception e1) {
+        	e1.printStackTrace();
+        }finally {
+        	if (sf!=null)sf.close();
+        }
+
+        return charsets[charsetToUse];
+    }
+   
+    public static String getStringTimeStamp(String simpleDateFormatStr){
+        SimpleDateFormat fHora = new SimpleDateFormat(simpleDateFormatStr);
+        return fHora.format(new Date());
+    }
+    
     //INCLUSIVE, per aixo el +1
     public static float[] arange(float ini, float fin, float step) {
         int size = FastMath.round((fin-ini)/step)+1;
@@ -1090,7 +1197,6 @@ public final class FileUtils {
         if (ret.length==0) ret=new float[] {ini};
         return ret;
     }
-    
     //INCLUSIVE
     public static int[] range(int ini, int fin, int step) {
         int size = (fin-ini)/step+1;
