@@ -1,10 +1,8 @@
 package com.vava33.cellsymm;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.net.URISyntaxException;
+import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Scanner;
 
 import javax.swing.JOptionPane;
@@ -21,11 +19,12 @@ public final class CellSymm_global {
 // LOGGING
     
     public static VavaLogger log;
+    private static final String className = "CellSymm_global";
     private static boolean loggingConsole = true; //console
     private static boolean loggingFile = false; //file
     private static boolean loggingTA = true; //textArea -- NO ESCRIT AL FITXER DE CONFIGURACIO JA QUE VOLEM SEMPRE ACTIVAT
     private static String loglevel = "info"; //info, config, etc...
-    
+    public static final String lineSeparator = System.getProperty("line.separator");
 
     public static void setLogLevel(String lev) {
         loglevel=lev;
@@ -46,7 +45,6 @@ public final class CellSymm_global {
         }else {
             log.enableLogger(false);
         }
-
     }
     
     public static VavaLogger getVavaLogger(String name){
@@ -78,10 +76,69 @@ public final class CellSymm_global {
 //*******************************************************************************************************
     
     
-    private static final String sgpropsurl = "/com/vava33/cellsymm_new/res/sgproperties";
-    private static ArrayList<SpaceGroup> spaceGroups;
+    private static final String sgpropsurl = "/com/vava33/cellsymm/res/sgproperties";
+    private static List<SpaceGroup> spaceGroups;
     
-    public static enum CrystalFamily {CUBIC,TETRA,HEXA,ORTO,MONO,TRIC,NONE}
+    public static enum CrystalFamily {CUBIC,TETRA,HEXA,ORTO,MONO,TRIC,NONE;
+        public String getNameString() {
+            switch (this) {
+            case CUBIC:
+                return "cubic";
+            case TETRA:
+                return "tetragonal";
+            case HEXA:
+                return "hexagonal";
+            case ORTO:
+                return "orthorhombic";
+            case MONO:
+                return "monoclinic";
+            case TRIC:
+                return "triclinic";
+            default:
+                return "crystal system not especified";
+            }
+        }
+        public List<SpaceGroup> getSpaceGroups(){
+            List<SpaceGroup> sgs= new ArrayList<SpaceGroup>();
+            switch (this) {
+            case CUBIC:
+                for (int i=195; i<=230;i++) {
+                    sgs.add(CellSymm_global.getSpaceGroupByNum(i));
+                }
+                break;
+            case TETRA:
+                for (int i=75; i<=142;i++) {
+                    sgs.add(CellSymm_global.getSpaceGroupByNum(i));
+                }
+                break;
+            case HEXA:
+                for (int i=143; i<=194;i++) {
+                    sgs.add(CellSymm_global.getSpaceGroupByNum(i));
+                }
+                break;
+            case ORTO:
+                for (int i=16; i<=74;i++) {
+                    sgs.add(CellSymm_global.getSpaceGroupByNum(i));
+                }
+                break;
+            case MONO:
+                for (int i=3; i<=15;i++) {
+                    sgs.add(CellSymm_global.getSpaceGroupByNum(i));
+                }
+                break;
+            case TRIC:
+                sgs.add(CellSymm_global.getSpaceGroupByNum(1));
+                sgs.add(CellSymm_global.getSpaceGroupByNum(2));
+                break;
+            default: //tots
+                for (int i=1; i<=230;i++) {
+                    sgs.add(CellSymm_global.getSpaceGroupByNum(i));
+                }
+                break;
+            }
+            return sgs;
+        }
+    }
     public static enum CrystalSystem {CUBIC,TETRA,HEXA,TRIGO,ORTO,MONO,TRIC,NONE}
     public static enum CrystalCentering {P,A,B,C,F,I,R;
         public double[] getTranslations() {
@@ -96,8 +153,8 @@ public final class CellSymm_global {
             default:return new double[] {0,0,0};
             }
         }
-        public ArrayList<RealMatrix> getTranslationsAsColumnMatrices() {
-            ArrayList<RealMatrix> lattMatrices = new ArrayList<RealMatrix>();
+        public List<RealMatrix> getTranslationsAsColumnMatrices() {
+            List<RealMatrix> lattMatrices = new ArrayList<RealMatrix>();
             lattMatrices.add(MatrixUtils.createColumnRealMatrix(new double[] {0,0,0}));
             switch (this) {
             case A:
@@ -160,60 +217,99 @@ public final class CellSymm_global {
      * Centro=false
      * SYMM=X,Y,Z;-X,Y,-Z
      * --------------------------------------------------------------------------------
+     * SGNum=5
+     * SGNames=C 1 2 1;C121;C 2;C2
+     * Latt=C
+     * Centro=false
+     * Setting=1
+     * CellChoice=1
+     * SYMM=X,Y,Z;-X,Y,-Z
      */
-    private static void initSpaceGroups() {
-        File f;
-        try {
-            f = new File(CellSymm_global.class.getResource(sgpropsurl).toURI());
-        } catch (URISyntaxException e1) {
-            log.info("Error reading resource");
-            return;
-        }
+    public static void initSpaceGroups() {
         Scanner sc;
         try {
-            sc = new Scanner(f);
+            InputStream in = CellSymm_global.class.getResourceAsStream(sgpropsurl);
+            sc = new Scanner(in);
             spaceGroups = new ArrayList<SpaceGroup>();
             while (sc.hasNextLine()) {
                 String line = sc.nextLine();
-                if (line.startsWith("SGNum=")){
-                    //new space group
+                if (line.startsWith("SGNum=")){//new space group
                     int sgnum = Integer.parseInt(line.split("=")[1]);
-                    line = sc.nextLine();
-                    String sgnames = line.split("=")[1];
-                    line = sc.nextLine();
-                    char centering = line.split("=")[1].toCharArray()[0];
-                    line = sc.nextLine();
-                    boolean centro = Boolean.parseBoolean(line.split("=")[1]);
-                    line = sc.nextLine();
-                    String matrices = line.split("=")[1];
-                    spaceGroups.add(new SpaceGroup(sgnum,sgnames,matrices,centro,centering));
+                    //init
+                    int[] setting = new int[] {1};
+                    int cellChoice=1;
+                    String sgnames="";
+                    char centering = 'P';
+                    boolean centro = true;
+                    String matrices = "";
+                    
+                    while (sc.hasNextLine()) {
+                        String sgLine = sc.nextLine();
+                        if (sgLine.trim().startsWith("----")) {
+                            //s'ha acabat l'space group... afegim el grup i marxem (provo d'afegirlo fora el while)
+                            break; // el inner while
+                        }
+                        if (FileUtils.containsIgnoreCase(sgLine, "SGnames"))sgnames = sgLine.split("=")[1];
+                        if (FileUtils.containsIgnoreCase(sgLine, "Latt"))centering = sgLine.split("=")[1].toCharArray()[0];
+                        if (FileUtils.containsIgnoreCase(sgLine, "Centro"))centro = Boolean.parseBoolean(sgLine.split("=")[1]);
+                        if (FileUtils.containsIgnoreCase(sgLine, "Setting")) {
+                            String[] vals = sgLine.split("=")[1].split(" ");
+                            setting = new int[vals.length];
+                            for (int i=0; i<vals.length;i++) {
+                                setting[i]=Integer.parseInt(vals[i]);
+                            }
+                        }
+                        if (FileUtils.containsIgnoreCase(sgLine, "CellChoice"))cellChoice = Integer.parseInt(sgLine.split("=")[1]);
+                        if (FileUtils.containsIgnoreCase(sgLine, "SYMM"))matrices = sgLine.split("=")[1];
+                    }
+                    //l'afegim
+                    spaceGroups.add(new SpaceGroup(sgnum,sgnames,matrices,centro,centering,cellChoice,setting));
                 }
             }
-        } catch (FileNotFoundException e) {
+        } catch (Exception e) {
+            if (log==null)initLogger(className);
             log.info("SGproperties file not found");
         }
 
     }
     
+    //TORNARÀ LA PRIMERA OCURRENCIA, ASSEGURAR QUE ES EL SETTING STANDARD
     public static SpaceGroup getSpaceGroupByNum(int SGnum) {
         if (spaceGroups==null)initSpaceGroups();
         if (spaceGroups.size()<=0)initSpaceGroups();
-        return spaceGroups.get(SGnum-1);
+        for (SpaceGroup sg: spaceGroups) {
+            if (sg.getsgNum()==SGnum)return sg;
+        }
+        return spaceGroups.get(0); //not found, tornem sg 1
     }
     
     public static SpaceGroup getSpaceGroupByName(String sgname, boolean askifnotfound) {
         if (spaceGroups==null)initSpaceGroups();
         if (spaceGroups.size()<=0)initSpaceGroups();
-        Iterator<SpaceGroup> itrsg = spaceGroups.iterator();
-        while (itrsg.hasNext()){
-            SpaceGroup sg = itrsg.next();
+        if (log==null)initLogger(className);
+        if (sgname.trim().length()<=0)return spaceGroups.get(0);
+        
+        //i si es un numero?
+        try {
+            int sgNum = Integer.parseInt(sgname.trim());
+            return getSpaceGroupByNum(sgNum);
+        }catch(Exception ex) {
+            log.fine("is not a SG num"); //continue
+        }
+        
+        for (SpaceGroup sg: spaceGroups){
             if (sg.isThisSG(sgname)) return sg;
         }
         String sgnamefix = identifySGsymbol(sgname, true);
-        while (itrsg.hasNext()){
-            SpaceGroup sg = itrsg.next();
+        for (SpaceGroup sg: spaceGroups){
             if (sg.isThisSG(sgnamefix)) return sg;
         }
+        //ultima passada sense tenir en compte el centratge
+        sgnamefix = sgname.trim().substring(1); //sense centratge
+        for (SpaceGroup sg: spaceGroups){
+            if (sg.isThisSGnoCentering(sgnamefix)) return sg;
+        }
+        
         //if not found, now ask for SGnumber
         if (askifnotfound) {
             String s = (String)JOptionPane.showInputDialog(
@@ -250,6 +346,7 @@ public final class CellSymm_global {
             //vol dir que el centratge és correcte
             SGout[0]=SGin[0];
         }else{
+            if (log==null)initLogger(className);
             log.debug("Error reading centering P, A, B, C, F, I, R");
             return "";
         }
@@ -273,7 +370,5 @@ public final class CellSymm_global {
 
         return fixedSGsymbol.trim();
     }
-    
-    
 
 }
